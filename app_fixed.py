@@ -357,43 +357,39 @@ if selected == "📊 Dashboard":
         else:
             st.info("Aucun agent créé pour le moment")
     
-    # Agents récents avec scroll
+    # Agents récents avec limite
     if agents:
         st.markdown("### 🆕 Agents Récents")
         
-        # Créer une zone scrollable avec st.container et CSS
+        # Créer un conteneur avec bordure visuelle
         with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 400px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
-            recent_agents = sorted(agents, key=lambda x: x.get('created_at', ''), reverse=True)[:5]
-            
-            for agent in recent_agents:
-                col1, col2 = st.columns([2, 1])
-                with col1:
-                    st.markdown(f"""
-                    <div class="agent-card">
-                        <h4>🤖 {agent.get('name', 'N/A')}</h4>
-                        <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
-                        <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
-                        <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
+            # Créer une zone délimitée avec st.expander
+            with st.expander("📋 **Zone des Agents Récents**", expanded=True):
+                # Limiter le nombre d'agents affichés
+                recent_agents = sorted(agents, key=lambda x: x.get('created_at', ''), reverse=True)[:3]
                 
-                with col2:
-                    if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
-                        st.session_state.current_agent = agent
-                        st.success("✅ Agent chargé avec succès ! Redirection vers l'exécution...")
+                for agent in recent_agents:
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        st.markdown(f"""
+                        <div class="agent-card">
+                            <h4>🤖 {agent.get('name', 'N/A')}</h4>
+                            <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
+                            <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
+                            <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
+                            st.session_state.current_agent = agent
+                            st.success("✅ Agent chargé avec succès ! Redirection vers l'exécution...")
+                            st.rerun()
+                
+                # Afficher un bouton pour voir plus d'agents si nécessaire
+                if len(agents) > 3:
+                    if st.button("📋 Voir Tous les Agents", key="voir_tous_agents"):
                         st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
 
 # Page Agents
 elif selected == "🤖 Agents":
@@ -457,34 +453,47 @@ elif selected == "🤖 Agents":
                     st.session_state.show_create_form = False
                     st.rerun()
     
-    # Liste des agents existants avec scroll
+    # Liste des agents existants avec pagination
     if agents:
         st.markdown("### 📋 Agents Existants")
         
-        # Créer une zone scrollable avec st.container et CSS
+        # Pagination pour éviter les listes trop longues
+        agents_per_page = 5
+        total_pages = (len(agents) + agents_per_page - 1) // agents_per_page
+        
+        if 'current_page' not in st.session_state:
+            st.session_state.current_page = 0
+        
+        # Sélecteur de page
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            page = st.selectbox(
+                "Page", 
+                range(total_pages), 
+                index=st.session_state.current_page,
+                key="page_selector"
+            )
+            st.session_state.current_page = page
+        
+        # Calculer les agents à afficher pour cette page
+        start_idx = page * agents_per_page
+        end_idx = min(start_idx + agents_per_page, len(agents))
+        current_agents = agents[start_idx:end_idx]
+        
+        # Créer une zone avec bordure pour la liste
         with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 600px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
-            
-            for agent in agents:
-                st.markdown(f"""
-                <div class="agent-card">
-                    <h4>🤖 {agent.get('name', 'N/A')}</h4>
-                    <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
-                    <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
-                    <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
-                    <p><strong>Statut:</strong> <span style="color: {'green' if agent.get('status') == 'active' else 'orange' if agent.get('status') == 'testing' else 'red'}">{agent.get('status', 'N/A')}</span></p>
-                </div>
-                """, unsafe_allow_html=True)
+            # Créer une zone délimitée avec st.expander
+            with st.expander(f"📋 **Page {page + 1} sur {total_pages} - Agents {start_idx + 1} à {end_idx} sur {len(agents)}**", expanded=True):
+                for agent in current_agents:
+                    st.markdown(f"""
+                    <div class="agent-card">
+                        <h4>🤖 {agent.get('name', 'N/A')}</h4>
+                        <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
+                        <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
+                        <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
+                        <p><strong>Statut:</strong> <span style="color: {'green' if agent.get('status') == 'active' else 'orange' if agent.get('status') == 'testing' else 'red'}">{agent.get('status', 'N/A')}</span></p>
+                    </div>
+                    """, unsafe_allow_html=True)
                 
                 # Boutons d'action
                 col1, col2, col3, col4, col5 = st.columns(5)
@@ -616,51 +625,62 @@ elif selected == "⚙️ Modèles":
                 else:
                     st.error("❌ Veuillez remplir tous les champs obligatoires.")
     
-    # Liste des modèles existants avec scroll
+    # Liste des modèles existants avec pagination
     if models:
         st.markdown("### 📋 Modèles Disponibles")
         
-        # Créer une zone scrollable avec st.container et CSS
+        # Pagination pour éviter les listes trop longues
+        models_per_page = 5
+        total_pages = (len(models) + models_per_page - 1) // models_per_page
+        
+        if 'current_model_page' not in st.session_state:
+            st.session_state.current_model_page = 0
+        
+        # Sélecteur de page pour les modèles
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            model_page = st.selectbox(
+                "Page Modèles", 
+                range(total_pages), 
+                index=st.session_state.current_model_page,
+                key="model_page_selector"
+            )
+            st.session_state.current_model_page = model_page
+        
+        # Calculer les modèles à afficher pour cette page
+        start_idx = model_page * models_per_page
+        end_idx = min(start_idx + models_per_page, len(models))
+        current_models = models[start_idx:end_idx]
+        
+        # Créer une zone avec bordure pour la liste
         with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 600px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
-            
-            for model in models:
-                col1, col2, col3 = st.columns([3, 1, 1])
-                
-                with col1:
-                    st.markdown(f"""
-                    <div class="agent-card">
-                        <h4>⚙️ {model.get('name', 'N/A')}</h4>
-                        <p><strong>Fournisseur:</strong> {model.get('provider', 'N/A')}</p>
-                        <p><strong>Description:</strong> {model.get('description', 'Aucune description')}</p>
-                        <p><strong>Statut:</strong> <span style="color: {'green' if model.get('status') == 'active' else 'orange' if model.get('status') == 'testing' else 'red'}">{model.get('status', 'N/A')}</span></p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                with col2:
-                    if st.button(f"🎯 Sélectionner", key=f"select_{model['name']}"):
-                        st.session_state.selected_model = model['name']
-                        st.success(f"✅ Modèle '{model['name']}' sélectionné !")
-                
-                with col3:
-                    if st.button(f"🗑️ Supprimer", key=f"delete_model_{model['name']}"):
-                        if st.confirm(f"Êtes-vous sûr de vouloir supprimer le modèle '{model['name']}' ?"):
-                            models.remove(model)
-                            save_models(models)
-                            st.success(f"✅ Modèle '{model['name']}' supprimé avec succès !")
-                            st.rerun()
-            
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Créer une zone délimitée avec st.expander
+            with st.expander(f"📋 **Page {model_page + 1} sur {total_pages} - Modèles {start_idx + 1} à {end_idx} sur {len(models)}**", expanded=True):
+                for model in current_models:
+                    col1, col2, col3 = st.columns([3, 1, 1])
+                    
+                    with col1:
+                        st.markdown(f"""
+                        <div class="agent-card">
+                            <h4>⚙️ {model.get('name', 'N/A')}</h4>
+                            <p><strong>Fournisseur:</strong> {model.get('provider', 'N/A')}</p>
+                            <p><strong>Description:</strong> {model.get('description', 'Aucune description')}</p>
+                            <p><strong>Statut:</strong> <span style="color: {'green' if model.get('status') == 'active' else 'orange' if model.get('status') == 'testing' else 'red'}">{model.get('status', 'N/A')}</span></p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        if st.button(f"🎯 Sélectionner", key=f"select_{model['name']}"):
+                            st.session_state.selected_model = model['name']
+                            st.success(f"✅ Modèle '{model['name']}' sélectionné !")
+                    
+                    with col3:
+                        if st.button(f"🗑️ Supprimer", key=f"delete_model_{model['name']}"):
+                            if st.confirm(f"Êtes-vous sûr de vouloir supprimer le modèle '{model['name']}' ?"):
+                                models.remove(model)
+                                save_models(models)
+                                st.success(f"✅ Modèle '{model['name']}' supprimé avec succès !")
+                                st.rerun()
     
     # Affichage du modèle sélectionné
     if st.session_state.selected_model:
@@ -724,57 +744,68 @@ elif selected == "📈 Statistiques":
             else:
                 st.info("Aucune donnée disponible pour les domaines")
         
-        # Statistiques détaillées avec scroll
+        # Statistiques détaillées avec pagination
         st.markdown("### 📋 Détails des Agents")
         
-        # Créer une zone scrollable avec st.container et CSS
+        # Pagination pour éviter les listes trop longues
+        stats_per_page = 10
+        total_pages = (len(agents) + stats_per_page - 1) // stats_per_page
+        
+        if 'current_stats_page' not in st.session_state:
+            st.session_state.current_stats_page = 0
+        
+        # Sélecteur de page pour les statistiques
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            stats_page = st.selectbox(
+                "Page Statistiques", 
+                range(total_pages), 
+                index=st.session_state.current_stats_page,
+                key="stats_page_selector"
+            )
+            st.session_state.current_stats_page = stats_page
+        
+        # Calculer les agents à afficher pour cette page
+        start_idx = stats_page * stats_per_page
+        end_idx = min(start_idx + stats_per_page, len(agents))
+        current_stats_agents = agents[start_idx:end_idx]
+        
+        # Créer une zone avec bordure pour la liste
         with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 500px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
-            
-            # Créer un DataFrame pour les analyses
-            agent_data = []
-            for agent in agents:
-                executions = agent.get('executions', [])
-                agent_data.append({
-                    'Nom': agent.get('name', 'N/A'),
-                    'Domaine': agent.get('domain', 'N/A'),
-                    'Type': agent.get('type', 'N/A'),
-                    'Statut': agent.get('status', 'N/A'),
-                    'Exécutions': len(executions),
-                    'Créé le': agent.get('created_at', 'N/A')
-                })
-            
-            if agent_data:
-                df = pd.DataFrame(agent_data)
-                st.dataframe(df, use_container_width=True)
+            # Créer une zone délimitée avec st.expander
+            with st.expander(f"📋 **Page {stats_page + 1} sur {total_pages} - Agents {start_idx + 1} à {end_idx} sur {len(agents)}**", expanded=True):
+                # Créer un DataFrame pour les analyses
+                agent_data = []
+                for agent in current_stats_agents:
+                    executions = agent.get('executions', [])
+                    agent_data.append({
+                        'Nom': agent.get('name', 'N/A'),
+                        'Domaine': agent.get('domain', 'N/A'),
+                        'Type': agent.get('type', 'N/A'),
+                        'Statut': agent.get('status', 'N/A'),
+                        'Exécutions': len(executions),
+                        'Créé le': agent.get('created_at', 'N/A')
+                    })
                 
-                # Ajouter des colonnes calculées
-                st.markdown("### 📈 Métriques Avancées")
-                
-                total_executions = sum(len(agent.get('executions', [])) for agent in agents)
-                avg_executions = total_executions / len(agents) if agents else 0
-                
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Total Exécutions", total_executions)
-                with col2:
-                    st.metric("Moyenne par Agent", f"{avg_executions:.1f}")
-                with col3:
-                    st.metric("Agents Actifs", active_agents_count)
-            else:
-                st.info("Aucune donnée disponible pour l'analyse")
-            
-            st.markdown('</div>', unsafe_allow_html=True)
+                if agent_data:
+                    df = pd.DataFrame(agent_data)
+                    st.dataframe(df, use_container_width=True)
+                    
+                    # Ajouter des colonnes calculées
+                    st.markdown("### 📈 Métriques Avancées")
+                    
+                    total_executions = sum(len(agent.get('executions', [])) for agent in agents)
+                    avg_executions = total_executions / len(agents) if agents else 0
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Total Exécutions", total_executions)
+                    with col2:
+                        st.metric("Moyenne par Agent", f"{avg_executions:.1f}")
+                    with col3:
+                        st.metric("Agents Actifs", active_agents_count)
+                else:
+                    st.info("Aucune donnée disponible pour l'analyse")
     
     else:
         st.info("🤖 Aucun agent créé pour le moment. Les statistiques seront disponibles une fois que vous aurez créé des agents.")
