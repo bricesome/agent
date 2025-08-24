@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Grok Beta",
+    "provider": "X (Twitter)",
+    "status": "active",
+    "description": "Modèle IA d'Elon Musk via xAI",
+    "created_at": "2024-01-01 00:00:00"
+  },
+  {
+    "name": "GPT-4",
+    "provider": "OpenAI",
+    "status": "active",
+    "description": "Modèle GPT-4 d'OpenAI",
+    "created_at": "2024-01-01 00:00:00"
+  },
+  {
+    "name": "Claude-3",
+    "provider": "Anthropic",
+    "status": "active",
+    "description": "Modèle Claude-3 d'Anthropic",
+    "created_at": "2024-01-01 00:00:00"
+  },
+  {
+    "name": "Gemini Pro",
+    "provider": "Google",
+    "status": "active",
+    "description": "Modèle Gemini Pro de Google",
+    "created_at": "2024-01-01 00:00:00"
+  },
+  {
+    "name": "Llama 2",
+    "provider": "Meta",
+    "status": "active",
+    "description": "Modèle Llama 2 de Meta",
+    "created_at": "2024-01-01 00:00:00"
+  }
+]

@@ -1,0 +1,38 @@
+# 🤖 Plateforme Agents IA - Dépendances Complètes
+
+# Framework Principal
+streamlit==1.28.1
+streamlit-option-menu==0.3.6
+
+# Data Processing - Versions compatibles Python 3.11
+pandas==2.0.3
+numpy==1.24.3
+
+# Visualization
+plotly==5.17.0
+
+# 🔑 Intégration IA - APIs Réelles
+openai==1.3.7
+anthropic==0.7.8
+google-generativeai==0.3.2
+requests==2.31.0
+
+# Document Processing
+python-docx==1.1.0
+PyPDF2==3.0.1
+
+# Image Processing
+Pillow==10.1.0
+
+# Environment & Configuration
+python-dotenv==1.0.0
+
+# Additional Streamlit Components
+streamlit-ace==0.1.1
+streamlit-extras==0.3.6
+streamlit-aggrid==0.3.4
+streamlit-authenticator==0.2.3
+
+# 🔒 Sécurité et Utilitaires
+cryptography==41.0.7
+hashlib
