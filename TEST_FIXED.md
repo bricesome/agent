@@ -164,3 +164,4 @@ dir .streamlit
 **Statut** : 🟢 **ERREUR CORRIGÉE - APPLICATION FONCTIONNELLE**
 
 **Utilisez `app_fixed.py` pour un test sans erreur !**
+

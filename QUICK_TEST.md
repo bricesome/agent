@@ -152,3 +152,4 @@ python -m pip install --upgrade streamlit streamlit-option-menu plotly python-do
 
 **URL de test** : http://localhost:8502  
 **Statut** : 🟢 **DÉPENDANCES INSTALLÉES ET APPLICATION LANCÉE**
+

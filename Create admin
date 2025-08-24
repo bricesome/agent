@@ -1,0 +1,34 @@
+```
+
+##  **Comment utiliser ce script :**
+
+### **1. Exécuter le script**
+```bash
+# Dans ton environnement virtuel
+python create_admin.py
+```
+
+### **2. Suivre les instructions**
+Le script te demandera :
+- **Nom d'utilisateur** (ex: `admin`)
+- **Email** (ex: `admin@example.com`)
+- **Mot de passe** (ex: `admin123`)
+- **Confirmation du mot de passe**
+
+### **3. Vérification**
+Le script vérifiera :
+- ✅ Si un administrateur existe déjà
+- ✅ La validité des données saisies
+- ✅ La création du compte dans l'auth et la base de données
+
+### **4. Résultat**
+Si tout fonctionne, tu verras :
+```
+✅ Compte administrateur créé avec succès !
+👤 Username: admin
+📧 Email: admin@example.com
+ Rôle: Administrateur
+️ Utilisateur ajouté à la base de données (ID: 1)
+```
+
+Maintenant le fichier `create_admin.py` est complet et fonctionnel ! 🎯

@@ -16,6 +16,38 @@
         "content_type": "📝 Texte direct",
         "content_length": 8,
         "user_prompt": "rtyui"
+      },
+      {
+        "agent_id": "agent_1_1703123456",
+        "agent_name": "Analyste Financier Pro",
+        "timestamp": "2025-08-24 20:43:28",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 57183,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_1_1703123456",
+        "agent_name": "Analyste Financier Pro",
+        "timestamp": "2025-08-24 20:48:20",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 57183,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_1_1703123456",
+        "agent_name": "Analyste Financier Pro",
+        "timestamp": "2025-08-24 21:02:13",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 57183,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_1_1703123456",
+        "agent_name": "Analyste Financier Pro",
+        "timestamp": "2025-08-24 21:03:34",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 43061,
+        "user_prompt": ""
       }
     ]
   },
@@ -44,6 +76,22 @@
         "content_type": "📝 Texte direct",
         "content_length": 9,
         "user_prompt": "Traduire en français "
+      },
+      {
+        "agent_id": "agent_3_1703123458",
+        "agent_name": "Traducteur Multilingue",
+        "timestamp": "2025-08-24 21:13:09",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 57183,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_3_1703123458",
+        "agent_name": "Traducteur Multilingue",
+        "timestamp": "2025-08-24 21:19:48",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 43061,
+        "user_prompt": ""
       }
     ]
   },
@@ -56,6 +104,47 @@
     "status": "active",
     "created_at": "2024-01-01 13:00:00",
     "model": "GPT-4",
-    "executions": []
+    "executions": [
+      {
+        "agent_id": "agent_4_1703123459",
+        "agent_name": "Développeur Code",
+        "timestamp": "2025-08-24 20:57:33",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 46770,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_4_1703123459",
+        "agent_name": "Développeur Code",
+        "timestamp": "2025-08-24 21:07:04",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 43061,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_4_1703123459",
+        "agent_name": "Développeur Code",
+        "timestamp": "2025-08-24 21:17:12",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 43061,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_4_1703123459",
+        "agent_name": "Développeur Code",
+        "timestamp": "2025-08-24 21:21:21",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 43061,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_4_1703123459",
+        "agent_name": "Développeur Code",
+        "timestamp": "2025-08-24 21:29:21",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 424,
+        "user_prompt": ""
+      }
+    ]
   }
 ]

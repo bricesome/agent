@@ -215,3 +215,4 @@ dir .streamlit
 - ✅ **0 Erreur** de graphiques
 - ✅ **100% Visibilité** du sidebar
 - ✅ **100% Fonctionnalité** de l'application
+

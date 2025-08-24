@@ -225,3 +225,4 @@ pip install openai anthropic google-generativeai python-dotenv
 Une fois vos clés API configurées, vos agents IA fonctionneront avec de vrais modèles d'intelligence artificielle, offrant des réponses de qualité professionnelle !
 
 **🚀 Vos agents sont maintenant prêts à être intelligents !** 🤖✨
+

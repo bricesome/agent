@@ -172,3 +172,4 @@ pip install --upgrade -r requirements.txt
 ---
 
 **🎉 Si tous les tests passent, votre plateforme IA est prête !**
+

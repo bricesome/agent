@@ -236,7 +236,6 @@ st.markdown(f"""
     <p><strong>Domaine:</strong> {current_agent.get('domain', 'N/A')}</p>
     <p><strong>Type:</strong> {current_agent.get('type', 'N/A')}</p>
     <p><strong>Modèle IA:</strong> {current_agent.get('model', 'N/A')}</p>
-    <p><strong>Prompt Système:</strong> {current_agent.get('system_prompt', 'N/A')}</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -280,7 +279,6 @@ elif content_type == "📄 Fichier PDF":
         content = extract_text_from_pdf(uploaded_file)
         if content:
             st.success(f"✅ Fichier PDF chargé: {uploaded_file.name}")
-            st.info(f"📊 Taille du texte extrait: {len(content)} caractères")
 
 elif content_type == "📘 Fichier Word":
     st.markdown("""
@@ -301,7 +299,7 @@ elif content_type == "📘 Fichier Word":
         content = extract_text_from_docx(uploaded_file)
         if content:
             st.success(f"✅ Fichier Word chargé: {uploaded_file.name}")
-            st.info(f"📊 Taille du texte extrait: {len(content)} caractères")
+
 
 elif content_type == "🔗 URL/Lien":
     url = st.text_input("Entrez l'URL à analyser:", placeholder="https://...")

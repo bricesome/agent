@@ -120,3 +120,4 @@ if __name__ == "__main__":
     print("🤖 Initialisation des Agents de Démonstration")
     print("=" * 50)
     init_demo_agents()
+

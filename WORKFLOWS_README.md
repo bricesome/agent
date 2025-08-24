@@ -174,3 +174,4 @@ Pour utiliser les workflows, vous devez avoir créé des agents avec les noms su
 Les **Workflows Multi-Agents** transforment votre plateforme en un véritable orchestrateur d'intelligence artificielle, capable de gérer des processus complexes de manière automatisée et intelligente.
 
 **Commencez par créer votre premier workflow et découvrez la puissance de l'automatisation multi-agents !** 🚀
+

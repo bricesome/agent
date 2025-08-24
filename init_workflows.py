@@ -114,3 +114,4 @@ if __name__ == "__main__":
     print("🔄 Initialisation des Workflows de Démonstration")
     print("=" * 50)
     init_demo_workflows()
+
