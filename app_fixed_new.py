@@ -158,8 +158,6 @@ st.markdown("""
         color: white !important;
         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
     }
-
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -169,9 +167,6 @@ if 'show_create_form' not in st.session_state:
 
 if 'editing_agent' not in st.session_state:
     st.session_state.editing_agent = None
-
-if 'selected_model' not in st.session_state:
-    st.session_state.selected_model = None
 
 # Variables globales
 active_agents_count = 0
@@ -357,43 +352,28 @@ if selected == "📊 Dashboard":
         else:
             st.info("Aucun agent créé pour le moment")
     
-    # Agents récents avec scroll
+    # Agents récents
     if agents:
         st.markdown("### 🆕 Agents Récents")
+        recent_agents = sorted(agents, key=lambda x: x.get('created_at', ''), reverse=True)[:5]
         
-        # Créer une zone scrollable avec st.container et CSS
-        with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 400px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
-            recent_agents = sorted(agents, key=lambda x: x.get('created_at', ''), reverse=True)[:5]
+        for agent in recent_agents:
+            col1, col2 = st.columns([2, 1])
+            with col1:
+                st.markdown(f"""
+                <div class="agent-card">
+                    <h4>🤖 {agent.get('name', 'N/A')}</h4>
+                    <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
+                    <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
+                    <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
+                </div>
+                """, unsafe_allow_html=True)
             
-            for agent in recent_agents:
-                col1, col2 = st.columns([2, 1])
-                with col1:
-                    st.markdown(f"""
-                    <div class="agent-card">
-                        <h4>🤖 {agent.get('name', 'N/A')}</h4>
-                        <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
-                        <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
-                        <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                with col2:
-                    if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
-                        st.session_state.current_agent = agent
-                        st.success("✅ Agent chargé avec succès ! Redirection vers l'exécution...")
-                        st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+            with col2:
+                if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
+                    st.session_state.current_agent = agent
+                    st.success("✅ Agent chargé avec succès ! Redirection vers l'exécution...")
+                    st.rerun()
 
 # Page Agents
 elif selected == "🤖 Agents":
@@ -457,107 +437,91 @@ elif selected == "🤖 Agents":
                     st.session_state.show_create_form = False
                     st.rerun()
     
-    # Liste des agents existants avec scroll
+    # Liste des agents existants
     if agents:
         st.markdown("### 📋 Agents Existants")
         
-        # Créer une zone scrollable avec st.container et CSS
-        with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 600px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
+        for agent in agents:
+            st.markdown(f"""
+            <div class="agent-card">
+                <h4>🤖 {agent.get('name', 'N/A')}</h4>
+                <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
+                <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
+                <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
+                <p><strong>Statut:</strong> <span style="color: {'green' if agent.get('status') == 'active' else 'orange' if agent.get('status') == 'testing' else 'red'}">{agent.get('status', 'N/A')}</span></p>
+            </div>
             """, unsafe_allow_html=True)
             
-            for agent in agents:
-                st.markdown(f"""
-                <div class="agent-card">
-                    <h4>🤖 {agent.get('name', 'N/A')}</h4>
-                    <p><strong>Domaine:</strong> {agent.get('domain', 'N/A')}</p>
-                    <p><strong>Type:</strong> {agent.get('type', 'N/A')}</p>
-                    <p><strong>Modèle:</strong> {agent.get('model', 'N/A')}</p>
-                    <p><strong>Statut:</strong> <span style="color: {'green' if agent.get('status') == 'active' else 'orange' if agent.get('status') == 'testing' else 'red'}">{agent.get('status', 'N/A')}</span></p>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Boutons d'action
-                col1, col2, col3, col4, col5 = st.columns(5)
-                
-                with col1:
-                    if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
-                        st.session_state.current_agent = agent
-                        st.success(f"✅ Agent **{agent.get('name', 'N/A')}** chargé avec succès ! Prêt à l'exécution.")
-                        st.rerun()
-                
-                with col2:
-                    if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
-                        st.session_state.editing_agent = agent
-                        st.rerun()
-                
-                with col3:
-                    if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
-                        if st.confirm(f"Êtes-vous sûr de vouloir supprimer l'agent '{agent['name']}' ?"):
-                            agents.remove(agent)
-                            save_agents(agents)
-                            st.success(f"✅ Agent '{agent['name']}' supprimé avec succès !")
-                            st.rerun()
-                
-                with col4:
-                    if st.button(f"📤 Partager", key=f"share_{agent['id']}"):
-                        st.info(f"🔗 Lien de partage pour l'agent '{agent['name']}' sera généré ici.")
-                
-                with col5:
-                    if st.button(f"📊 Stats", key=f"stats_{agent['id']}"):
-                        executions = agent.get('executions', [])
-                        st.info(f"📈 Statistiques de l'agent '{agent['name']}': {len(executions)} exécutions")
-                
-                # Formulaire d'édition
-                if st.session_state.editing_agent and st.session_state.editing_agent.get('id') == agent.get('id'):
-                    with st.form(f"edit_agent_form_{agent['id']}"):
-                        st.markdown("### ✏️ Modifier l'Agent")
-                        
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            edited_name = st.text_input("Nom de l'Agent", value=agent.get('name', ''), key=f"edit_name_{agent['id']}")
-                            edited_domain = st.text_input("Domaine", value=agent.get('domain', ''), key=f"edit_domain_{agent['id']}")
-                        
-                        with col2:
-                            edited_type = st.selectbox("Type d'Agent", ["Analyse", "Rapport", "Résumé", "Autre"], index=["Analyse", "Rapport", "Résumé", "Autre"].index(agent.get('type', 'Analyse')), key=f"edit_type_{agent['id']}")
-                            edited_model = st.selectbox("Modèle IA", [model["name"] for model in models] if models else ["GPT-4", "Claude-3", "Gemini Pro"], index=([model["name"] for model in models] if models else ["GPT-4", "Claude-3", "Gemini Pro"]).index(agent.get('model', 'GPT-4')), key=f"edit_model_{agent['id']}")
-                        
-                        edited_prompt = st.text_area(
-                            "Prompt Système",
-                            value=agent.get('system_prompt', ''),
-                            height=150,
-                            key=f"edit_prompt_{agent['id']}"
-                        )
-                        
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.form_submit_button("💾 Sauvegarder", type="primary"):
-                                agent['name'] = edited_name
-                                agent['domain'] = edited_domain
-                                agent['type'] = edited_type
-                                agent['model'] = edited_model
-                                agent['system_prompt'] = edited_prompt
-                                
-                                save_agents(agents)
-                                st.success(f"✅ Agent '{edited_name}' modifié avec succès !")
-                                st.session_state.editing_agent = None
-                                st.rerun()
-                        
-                        with col2:
-                            if st.form_submit_button("❌ Annuler"):
-                                st.session_state.editing_agent = None
-                                st.rerun()
+            # Boutons d'action
+            col1, col2, col3, col4, col5 = st.columns(5)
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            with col1:
+                if st.button(f"▶️ Exécuter", key=f"exec_{agent['id']}"):
+                    st.session_state.current_agent = agent
+                    st.success(f"✅ Agent **{agent.get('name', 'N/A')}** chargé avec succès ! Prêt à l'exécution.")
+                    st.rerun()
+            
+            with col2:
+                if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
+                    st.session_state.editing_agent = agent
+                    st.rerun()
+            
+            with col3:
+                if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
+                    if st.confirm(f"Êtes-vous sûr de vouloir supprimer l'agent '{agent['name']}' ?"):
+                        agents.remove(agent)
+                        save_agents(agents)
+                        st.success(f"✅ Agent '{agent['name']}' supprimé avec succès !")
+                        st.rerun()
+            
+            with col4:
+                if st.button(f"📤 Partager", key=f"share_{agent['id']}"):
+                    st.info(f"🔗 Lien de partage pour l'agent '{agent['name']}' sera généré ici.")
+            
+            with col5:
+                if st.button(f"📊 Stats", key=f"stats_{agent['id']}"):
+                    executions = agent.get('executions', [])
+                    st.info(f"📈 Statistiques de l'agent '{agent['name']}': {len(executions)} exécutions")
+            
+            # Formulaire d'édition
+            if st.session_state.editing_agent and st.session_state.editing_agent.get('id') == agent.get('id'):
+                with st.form(f"edit_agent_form_{agent['id']}"):
+                    st.markdown("### ✏️ Modifier l'Agent")
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        edited_name = st.text_input("Nom de l'Agent", value=agent.get('name', ''), key=f"edit_name_{agent['id']}")
+                        edited_domain = st.text_input("Domaine", value=agent.get('domain', ''), key=f"edit_domain_{agent['id']}")
+                    
+                    with col2:
+                        edited_type = st.selectbox("Type d'Agent", ["Analyse", "Rapport", "Résumé", "Autre"], index=["Analyse", "Rapport", "Résumé", "Autre"].index(agent.get('type', 'Analyse')), key=f"edit_type_{agent['id']}")
+                        edited_model = st.selectbox("Modèle IA", [model["name"] for model in models] if models else ["GPT-4", "Claude-3", "Gemini Pro"], index=([model["name"] for model in models] if models else ["GPT-4", "Claude-3", "Gemini Pro"]).index(agent.get('model', 'GPT-4')), key=f"edit_model_{agent['id']}")
+                    
+                    edited_prompt = st.text_area(
+                        "Prompt Système",
+                        value=agent.get('system_prompt', ''),
+                        height=150,
+                        key=f"edit_prompt_{agent['id']}"
+                    )
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.form_submit_button("💾 Sauvegarder", type="primary"):
+                            agent['name'] = edited_name
+                            agent['domain'] = edited_domain
+                            agent['type'] = edited_type
+                            agent['model'] = edited_model
+                            agent['system_prompt'] = edited_prompt
+                            
+                            save_agents(agents)
+                            st.success(f"✅ Agent '{edited_name}' modifié avec succès !")
+                            st.session_state.editing_agent = None
+                            st.rerun()
+                    
+                    with col2:
+                        if st.form_submit_button("❌ Annuler"):
+                            st.session_state.editing_agent = None
+                            st.rerun()
     
     else:
         st.info("🤖 Aucun agent créé pour le moment. Commencez par en créer un !")
@@ -616,56 +580,34 @@ elif selected == "⚙️ Modèles":
                 else:
                     st.error("❌ Veuillez remplir tous les champs obligatoires.")
     
-    # Liste des modèles existants avec scroll
+    # Liste des modèles existants
     if models:
         st.markdown("### 📋 Modèles Disponibles")
         
-        # Créer une zone scrollable avec st.container et CSS
-        with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 600px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
+        for model in models:
+            col1, col2, col3 = st.columns([3, 1, 1])
             
-            for model in models:
-                col1, col2, col3 = st.columns([3, 1, 1])
-                
-                with col1:
-                    st.markdown(f"""
-                    <div class="agent-card">
-                        <h4>⚙️ {model.get('name', 'N/A')}</h4>
-                        <p><strong>Fournisseur:</strong> {model.get('provider', 'N/A')}</p>
-                        <p><strong>Description:</strong> {model.get('description', 'Aucune description')}</p>
-                        <p><strong>Statut:</strong> <span style="color: {'green' if model.get('status') == 'active' else 'orange' if model.get('status') == 'testing' else 'red'}">{model.get('status', 'N/A')}</span></p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                with col2:
-                    if st.button(f"🎯 Sélectionner", key=f"select_{model['name']}"):
-                        st.session_state.selected_model = model['name']
-                        st.success(f"✅ Modèle '{model['name']}' sélectionné !")
-                
-                with col3:
-                    if st.button(f"🗑️ Supprimer", key=f"delete_model_{model['name']}"):
-                        if st.confirm(f"Êtes-vous sûr de vouloir supprimer le modèle '{model['name']}' ?"):
-                            models.remove(model)
-                            save_models(models)
-                            st.success(f"✅ Modèle '{model['name']}' supprimé avec succès !")
-                            st.rerun()
+            with col1:
+                st.markdown(f"""
+                <div class="agent-card">
+                    <h4>⚙️ {model.get('name', 'N/A')}</h4>
+                    <p><strong>Fournisseur:</strong> {model.get('provider', 'N/A')}</p>
+                    <p><strong>Description:</strong> {model.get('description', 'Aucune description')}</p>
+                    <p><strong>Statut:</strong> <span style="color: {'green' if model.get('status') == 'active' else 'orange' if model.get('status') == 'testing' else 'red'}">{model.get('status', 'N/A')}</span></p>
+                </div>
+                """, unsafe_allow_html=True)
             
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Affichage du modèle sélectionné
-    if st.session_state.selected_model:
-        st.markdown("### 🎯 Modèle Actuellement Sélectionné")
-        st.success(f"✅ **{st.session_state.selected_model}** est votre modèle par défaut")
+            with col2:
+                if st.button(f"🎯 Sélectionner", key=f"select_{model['name']}"):
+                    st.success(f"✅ Modèle '{model['name']}' sélectionné !")
+            
+            with col3:
+                if st.button(f"🗑️ Supprimer", key=f"delete_model_{model['name']}"):
+                    if st.confirm(f"Êtes-vous sûr de vouloir supprimer le modèle '{model['name']}' ?"):
+                        models.remove(model)
+                        save_models(models)
+                        st.success(f"✅ Modèle '{model['name']}' supprimé avec succès !")
+                        st.rerun()
     
     # Intégration avec le module AI
     if GROK_AVAILABLE:
@@ -724,57 +666,41 @@ elif selected == "📈 Statistiques":
             else:
                 st.info("Aucune donnée disponible pour les domaines")
         
-        # Statistiques détaillées avec scroll
+        # Statistiques détaillées
         st.markdown("### 📋 Détails des Agents")
         
-        # Créer une zone scrollable avec st.container et CSS
-        with st.container():
-            st.markdown("""
-            <div style="
-                max-height: 500px; 
-                overflow-y: auto; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 10px; 
-                padding: 1rem; 
-                background: #fafafa;
-                margin: 1rem 0;
-            ">
-            """, unsafe_allow_html=True)
+        # Créer un DataFrame pour les analyses
+        agent_data = []
+        for agent in agents:
+            executions = agent.get('executions', [])
+            agent_data.append({
+                'Nom': agent.get('name', 'N/A'),
+                'Domaine': agent.get('domain', 'N/A'),
+                'Type': agent.get('type', 'N/A'),
+                'Statut': agent.get('status', 'N/A'),
+                'Exécutions': len(executions),
+                'Créé le': agent.get('created_at', 'N/A')
+            })
+        
+        if agent_data:
+            df = pd.DataFrame(agent_data)
+            st.dataframe(df, use_container_width=True)
             
-            # Créer un DataFrame pour les analyses
-            agent_data = []
-            for agent in agents:
-                executions = agent.get('executions', [])
-                agent_data.append({
-                    'Nom': agent.get('name', 'N/A'),
-                    'Domaine': agent.get('domain', 'N/A'),
-                    'Type': agent.get('type', 'N/A'),
-                    'Statut': agent.get('status', 'N/A'),
-                    'Exécutions': len(executions),
-                    'Créé le': agent.get('created_at', 'N/A')
-                })
+            # Ajouter des colonnes calculées
+            st.markdown("### 📈 Métriques Avancées")
             
-            if agent_data:
-                df = pd.DataFrame(agent_data)
-                st.dataframe(df, use_container_width=True)
-                
-                # Ajouter des colonnes calculées
-                st.markdown("### 📈 Métriques Avancées")
-                
-                total_executions = sum(len(agent.get('executions', [])) for agent in agents)
-                avg_executions = total_executions / len(agents) if agents else 0
-                
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Total Exécutions", total_executions)
-                with col2:
-                    st.metric("Moyenne par Agent", f"{avg_executions:.1f}")
-                with col3:
-                    st.metric("Agents Actifs", active_agents_count)
-            else:
-                st.info("Aucune donnée disponible pour l'analyse")
+            total_executions = sum(len(agent.get('executions', [])) for agent in agents)
+            avg_executions = total_executions / len(agents) if agents else 0
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Exécutions", total_executions)
+            with col2:
+                st.metric("Moyenne par Agent", f"{avg_executions:.1f}")
+            with col3:
+                st.metric("Agents Actifs", active_agents_count)
+        else:
+            st.info("Aucune donnée disponible pour l'analyse")
     
     else:
         st.info("🤖 Aucun agent créé pour le moment. Les statistiques seront disponibles une fois que vous aurez créé des agents.")

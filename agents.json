@@ -7,8 +7,17 @@
     "system_prompt": "Vous êtes un analyste financier expert spécialisé dans l'analyse des rapports financiers, des bilans et des états de résultats. Votre rôle est d'identifier les tendances, les risques et les opportunités dans les données financières. Fournissez des analyses détaillées avec des recommandations concrètes.",
     "status": "active",
     "created_at": "2024-01-01 10:00:00",
-    "model": "GPT-4",
-    "executions": []
+    "model": "Grok Beta",
+    "executions": [
+      {
+        "agent_id": "agent_1_1703123456",
+        "agent_name": "Analyste Financier Pro",
+        "timestamp": "2025-08-24 03:51:20",
+        "content_type": "📝 Texte direct",
+        "content_length": 8,
+        "user_prompt": "rtyui"
+      }
+    ]
   },
   {
     "id": "agent_2_1703123457",
@@ -18,7 +27,7 @@
     "system_prompt": "Vous êtes un rédacteur marketing créatif et expérimenté. Votre mission est de créer des rapports marketing percutants, d'analyser les campagnes publicitaires et de proposer des stratégies innovantes. Utilisez un ton professionnel mais accessible.",
     "status": "active",
     "created_at": "2024-01-01 11:00:00",
-    "model": "GPT-4",
+    "model": "Grok Beta",
     "executions": []
   },
   {
@@ -30,7 +39,24 @@
     "status": "active",
     "created_at": "2024-01-01 12:00:00",
     "model": "GPT-4",
-    "executions": []
+    "executions": [
+      {
+        "agent_id": "agent_3_1703123458",
+        "agent_name": "Traducteur Multilingue",
+        "timestamp": "2025-08-24 04:35:44",
+        "content_type": "📝 Texte direct",
+        "content_length": 9,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_3_1703123458",
+        "agent_name": "Traducteur Multilingue",
+        "timestamp": "2025-08-24 04:36:11",
+        "content_type": "📝 Texte direct",
+        "content_length": 9,
+        "user_prompt": "Traduire en français "
+      }
+    ]
   },
   {
     "id": "agent_4_1703123459",
@@ -51,7 +77,24 @@
     "system_prompt": "Vous êtes un expert en synthèse de documents. Votre rôle est de créer des résumés concis et structurés qui capturent l'essentiel du contenu. Organisez l'information de manière logique et hiérarchisée.",
     "status": "active",
     "created_at": "2024-01-01 14:00:00",
-    "model": "GPT-4",
-    "executions": []
+    "model": "Grok Beta",
+    "executions": [
+      {
+        "agent_id": "agent_5_1703123460",
+        "agent_name": "Résumeur de Documents",
+        "timestamp": "2025-08-24 04:00:25",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 17164,
+        "user_prompt": ""
+      },
+      {
+        "agent_id": "agent_5_1703123460",
+        "agent_name": "Résumeur de Documents",
+        "timestamp": "2025-08-24 04:01:42",
+        "content_type": "📄 Fichier PDF",
+        "content_length": 644,
+        "user_prompt": ""
+      }
+    ]
   }
 ]
