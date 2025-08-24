@@ -1,0 +1,73 @@
+[
+  {
+    "id": "workflow_support_client_demo",
+    "name": "Support Client - Résolution de Problème",
+    "description": "Workflow automatisé pour la résolution de problèmes clients en 4 étapes",
+    "type": "Support Client - Résolution de Problème",
+    "steps": [
+      {
+        "order": 1,
+        "name": "Classification",
+        "agent_name": "Agent Classification",
+        "type": "classification",
+        "description": "Classification automatique du problème client"
+      },
+      {
+        "order": 2,
+        "name": "Diagnostic",
+        "agent_name": "Agent Diagnostic",
+        "type": "diagnostic",
+        "description": "Analyse approfondie et diagnostic du problème"
+      },
+      {
+        "order": 3,
+        "name": "Solution",
+        "agent_name": "Agent Solution",
+        "type": "solution",
+        "description": "Proposition de solution adaptée"
+      },
+      {
+        "order": 4,
+        "name": "Suivi",
+        "agent_name": "Agent Suivi",
+        "type": "suivi",
+        "description": "Planification du suivi et vérification"
+      }
+    ],
+    "status": "active",
+    "created_at": "2024-01-15 10:00:00",
+    "executions": []
+  },
+  {
+    "id": "workflow_analyse_financiere_demo",
+    "name": "Analyse Financière Complète",
+    "description": "Workflow d'analyse financière en 3 étapes",
+    "type": "Analyse Financière",
+    "steps": [
+      {
+        "order": 1,
+        "name": "Collecte de Données",
+        "agent_name": "Agent Collecte",
+        "type": "collecte",
+        "description": "Récupération des données financières"
+      },
+      {
+        "order": 2,
+        "name": "Analyse",
+        "agent_name": "Agent Analyse",
+        "type": "analyse",
+        "description": "Analyse approfondie des données"
+      },
+      {
+        "order": 3,
+        "name": "Rapport",
+        "agent_name": "Agent Rapport",
+        "type": "rapport",
+        "description": "Génération du rapport final"
+      }
+    ],
+    "status": "active",
+    "created_at": "2024-01-15 10:30:00",
+    "executions": []
+  }
+]

@@ -20,17 +20,6 @@
     ]
   },
   {
-    "id": "agent_2_1703123457",
-    "name": "Rédacteur Marketing",
-    "domain": "Marketing",
-    "type": "Rapport",
-    "system_prompt": "Vous êtes un rédacteur marketing créatif et expérimenté. Votre mission est de créer des rapports marketing percutants, d'analyser les campagnes publicitaires et de proposer des stratégies innovantes. Utilisez un ton professionnel mais accessible.",
-    "status": "active",
-    "created_at": "2024-01-01 11:00:00",
-    "model": "Grok Beta",
-    "executions": []
-  },
-  {
     "id": "agent_3_1703123458",
     "name": "Traducteur Multilingue",
     "domain": "Langues",
@@ -62,39 +51,11 @@
     "id": "agent_4_1703123459",
     "name": "Développeur Code",
     "domain": "Informatique",
-    "type": "Code",
+    "type": "Analyse",
     "system_prompt": "Vous êtes un développeur expérimenté spécialisé dans la révision et l'optimisation de code. Analysez le code fourni, identifiez les problèmes potentiels et proposez des améliorations. Expliquez vos recommandations de manière claire.",
     "status": "active",
     "created_at": "2024-01-01 13:00:00",
     "model": "GPT-4",
     "executions": []
-  },
-  {
-    "id": "agent_5_1703123460",
-    "name": "Résumeur de Documents",
-    "domain": "Général",
-    "type": "Résumé",
-    "system_prompt": "Vous êtes un expert en synthèse de documents. Votre rôle est de créer des résumés concis et structurés qui capturent l'essentiel du contenu. Organisez l'information de manière logique et hiérarchisée.",
-    "status": "active",
-    "created_at": "2024-01-01 14:00:00",
-    "model": "Grok Beta",
-    "executions": [
-      {
-        "agent_id": "agent_5_1703123460",
-        "agent_name": "Résumeur de Documents",
-        "timestamp": "2025-08-24 04:00:25",
-        "content_type": "📄 Fichier PDF",
-        "content_length": 17164,
-        "user_prompt": ""
-      },
-      {
-        "agent_id": "agent_5_1703123460",
-        "agent_name": "Résumeur de Documents",
-        "timestamp": "2025-08-24 04:01:42",
-        "content_type": "📄 Fichier PDF",
-        "content_length": 644,
-        "user_prompt": ""
-      }
-    ]
   }
 ]
