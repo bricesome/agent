@@ -10,6 +10,8 @@ from PIL import Image
 import io
 import base64
 import time
+from agents.email_agent import email_agent
+from agents.planner_agent import planner_agent
 
 # Configuration de la page
 st.set_page_config(
@@ -127,6 +129,43 @@ def save_agents(agents):
     with open('agents.json', 'w', encoding='utf-8') as f:
         json.dump(agents, f, ensure_ascii=False, indent=2)
 
+def ensure_system_agents(agents_list):
+    """Ajoute les agents système (non supprimables) s'ils sont absents."""
+    system_agents = {
+        "planner_agent_system": {
+            "id": "planner_agent_system",
+            "name": "Planificateur de Tâches",
+            "domain": "Système",
+            "type": "Outil",
+            "system_prompt": "Agent système permettant de planifier l'exécution d'agents, workflows et actions (week-ends, jours fériés, saisons, conditions).",
+            "status": "active",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "model": st.session_state.selected_model,
+            "system": True
+        },
+        "email_agent_system": {
+            "id": "email_agent_system",
+            "name": "Agent d'Envoi d'Emails",
+            "domain": "Système",
+            "type": "Outil",
+            "system_prompt": "Agent système qui envoie par email les résultats d'agents ou de workflows. Chaque utilisateur doit configurer son SMTP personnel.",
+            "status": "active",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "model": st.session_state.selected_model,
+            "system": True
+        }
+    }
+
+    existing_ids = {a.get("id") for a in agents_list}
+    added = False
+    for sys_id, agent in system_agents.items():
+        if sys_id not in existing_ids:
+            agents_list.append(agent)
+            added = True
+    if added:
+        save_agents(agents_list)
+    return agents_list
+
 def save_models(models):
     with open('models.json', 'w', encoding='utf-8') as f:
         json.dump(models, f, ensure_ascii=False, indent=2)
@@ -139,6 +178,7 @@ if 'current_agent' not in st.session_state:
 
 # Chargement des données
 agents = load_agents()
+agents = ensure_system_agents(agents)
 models = load_models()
 
 # Sidebar avec navigation
@@ -380,13 +420,21 @@ elif selected == "🤖 Agents":
                         st.rerun()
                 
                 with col2:
-                    if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
-                        st.session_state.editing_agent = agent
-                        st.rerun()
+                    if agent.get('system'):
+                        st.button(f"✏️ Éditer", key=f"edit_{agent['id']}", disabled=True)
+                        st.caption("Agent système non éditable")
+                    else:
+                        if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
+                            st.session_state.editing_agent = agent
+                            st.rerun()
                 
                 with col3:
-                    if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
-                        if st.confirm(f"Êtes-vous sûr de vouloir supprimer l'agent '{agent['name']}' ?"):
+                    if agent.get('system'):
+                        st.button("🗑️ Supprimer", key=f"delete_{agent['id']}", disabled=True)
+                        st.caption("Agent système non supprimable")
+                    else:
+                        if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
+                            # Confirmation minimale
                             agents.remove(agent)
                             save_agents(agents)
                             st.success(f"Agent '{agent['name']}' supprimé !")

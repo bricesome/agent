@@ -6,6 +6,7 @@ import PyPDF2
 from docx import Document
 import io
 import base64
+from agents.email_agent import email_agent
 
 # Configuration de la page
 st.set_page_config(
@@ -357,6 +358,30 @@ with col2:
                     file_name=f"resultat_{current_agent.get('name', 'agent')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
                     mime="text/markdown"
                 )
+
+            # Envoi par email via l'agent email
+            st.markdown("### 📧 Envoyer par Email")
+            with st.form("send_email_form"):
+                recipients_str = st.text_input("Destinataires (emails séparés par des virgules)")
+                subject = st.text_input("Sujet", value=f"Résultat - {current_agent.get('name', 'Agent')}")
+                submit_email = st.form_submit_button("📤 Envoyer le Résultat par Email")
+                if submit_email:
+                    recipients = [e.strip() for e in recipients_str.split(",") if e.strip()]
+                    if not recipients:
+                        st.error("Veuillez saisir au moins un destinataire valide.")
+                    else:
+                        # user_id pourrait venir de la session/auth; on fallback sur 'local_user'
+                        user_id = str(st.session_state.get('user_id', 'local_user'))
+                        send_res = email_agent.send_agent_result(
+                            user_id=user_id,
+                            agent_name=current_agent.get('name', 'Agent'),
+                            result=result,
+                            recipients=recipients
+                        )
+                        if send_res.get("success"):
+                            st.success(send_res.get("message", "Email envoyé."))
+                        else:
+                            st.error(send_res.get("error", "Échec d'envoi. Configurez votre email dans la page Modèles/Configuration."))
             
             # Historique des exécutions
             if 'execution_history' not in st.session_state:

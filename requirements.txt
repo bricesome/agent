@@ -36,3 +36,4 @@ streamlit-authenticator==0.2.3
 # 🔒 Sécurité et Utilitaires
 cryptography==41.0.7
 hashlib
+schedule==1.2.1

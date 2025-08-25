@@ -149,3 +149,4 @@ streamlit run app_fixed.py --server.port 8502
 
 **Le menu est maintenant parfaitement visible avec des couleurs contrastées !** 🎨👁️
 
+

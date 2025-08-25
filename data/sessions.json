@@ -28,5 +28,45 @@
     "username": "some",
     "created_at": "2025-08-24T22:48:11.900468",
     "expires_at": "2025-08-25T22:48:11.900468"
+  },
+  "session_admin_20250825_125015": {
+    "username": "admin",
+    "created_at": "2025-08-25T12:50:15.703196",
+    "expires_at": "2025-08-26T12:50:15.703196"
+  },
+  "session_admin_20250825_132654": {
+    "username": "admin",
+    "created_at": "2025-08-25T13:26:54.351727",
+    "expires_at": "2025-08-26T13:26:54.351727"
+  },
+  "session_admin_20250825_133415": {
+    "username": "admin",
+    "created_at": "2025-08-25T13:34:15.517333",
+    "expires_at": "2025-08-26T13:34:15.517333"
+  },
+  "session_admin_20250825_133820": {
+    "username": "admin",
+    "created_at": "2025-08-25T13:38:20.782380",
+    "expires_at": "2025-08-26T13:38:20.782380"
+  },
+  "session_admin_20250825_134229": {
+    "username": "admin",
+    "created_at": "2025-08-25T13:42:29.032853",
+    "expires_at": "2025-08-26T13:42:29.032853"
+  },
+  "session_admin_20250825_141308": {
+    "username": "admin",
+    "created_at": "2025-08-25T14:13:08.240421",
+    "expires_at": "2025-08-26T14:13:08.240421"
+  },
+  "session_admin_20250825_141640": {
+    "username": "admin",
+    "created_at": "2025-08-25T14:16:40.376917",
+    "expires_at": "2025-08-26T14:16:40.376917"
+  },
+  "session_admin_20250825_143007": {
+    "username": "admin",
+    "created_at": "2025-08-25T14:30:07.615439",
+    "expires_at": "2025-08-26T14:30:07.615439"
   }
 }

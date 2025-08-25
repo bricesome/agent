@@ -216,3 +216,4 @@ dir .streamlit
 - ✅ **100% Visibilité** du sidebar
 - ✅ **100% Fonctionnalité** de l'application
 
+

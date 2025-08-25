@@ -11,6 +11,9 @@ import base64
 # Import des nouveaux modules d'authentification et base de données
 from auth.auth_manager import AuthManager
 from database.db_manager import DatabaseManager
+from agents.email_agent import email_agent
+from agents.planner_agent import planner_agent
+from datetime import datetime
 
 # Configuration de la page - DOIT être en premier !
 st.set_page_config(
@@ -48,6 +51,44 @@ def load_agents():
     except Exception as e:
         st.error(f"Erreur lors du chargement des agents: {e}")
         return []
+
+def ensure_system_agents(agents_list):
+    """Ajoute les agents système (non supprimables) s'ils sont absents."""
+    system_agents = {
+        "planner_agent_system": {
+            "id": "planner_agent_system",
+            "name": "Planificateur de Tâches",
+            "domain": "Système",
+            "type": "Outil",
+            "model": "System",
+            "system_prompt": "Agent système de planification (date/heure, week-ends, saisons, conditions).",
+            "status": "active",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "executions": [],
+            "system": True
+        },
+        "email_agent_system": {
+            "id": "email_agent_system",
+            "name": "Agent d'Envoi d'Emails",
+            "domain": "Système",
+            "type": "Outil",
+            "model": "System",
+            "system_prompt": "Agent système d'envoi par email des résultats d'agents/workflows (config SMTP par utilisateur).",
+            "status": "active",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "executions": [],
+            "system": True
+        }
+    }
+    existing_ids = {a.get("id") for a in agents_list}
+    added = False
+    for sys_id, agent in system_agents.items():
+        if sys_id not in existing_ids:
+            agents_list.append(agent)
+            added = True
+    if added:
+        save_agents(agents_list)
+    return agents_list
 
 def save_agents(agents):
     try:
@@ -209,6 +250,7 @@ def show_main_app():
     """Affiche l'application principale"""
     # Charger les données
     agents = load_agents()
+    agents = ensure_system_agents(agents)
     models = load_models()
     workflows = load_workflows()
     
@@ -228,6 +270,122 @@ def show_main_app():
     if 'current_workflow' not in st.session_state:
         st.session_state.current_workflow = None
     
+    # Vues intégrées
+    def render_email_configuration_view():
+        st.markdown("""
+        <div class="main-header">
+            <h1>📧 Configuration Email</h1>
+            <p>Configurez votre SMTP personnel pour l'envoi des résultats.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        user_id = (st.session_state.current_user.get('username') if st.session_state.get('current_user') else 'local_user') or 'local_user'
+        with st.form("email_config_form_inline"):
+            col1, col2 = st.columns(2)
+            with col1:
+                smtp_server = st.text_input("Serveur SMTP", placeholder="smtp.gmail.com")
+                email_addr = st.text_input("Adresse Email", placeholder="you@example.com")
+                use_tls = st.checkbox("Utiliser TLS", value=True)
+            with col2:
+                smtp_port = st.number_input("Port SMTP", value=587, step=1)
+                password = st.text_input("Mot de passe/Token App", type="password")
+            submitted = st.form_submit_button("💾 Sauvegarder & Tester")
+            if submitted:
+                cfg = {"smtp_server": smtp_server, "smtp_port": int(smtp_port), "email": email_addr, "password": password, "use_tls": bool(use_tls)}
+                res = email_agent.configure_user_email(str(user_id), cfg)
+                if res.get("success"):
+                    st.success("Configuration enregistrée et testée avec succès.")
+                else:
+                    st.error(res.get("error", "Erreur de configuration"))
+        st.markdown("---")
+        cfg = email_agent.get_user_config(str(user_id))
+        if cfg:
+            safe = {k: ("******" if k == "password" else v) for k, v in cfg.items()}
+            st.json(safe)
+
+    def render_planning_view():
+        st.markdown("""
+        <div class="main-header">
+            <h1>📆 Planification des Tâches</h1>
+            <p>Planifiez l'exécution d'agents, workflows, emails.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        non_system_agents = [a for a in agents if not a.get('system')]
+        with st.form("plan_task_form_inline"):
+            name = st.text_input("Nom de la tâche", placeholder="Ex: Rapport du samedi")
+            description = st.text_area("Description", placeholder="Détails…")
+            task_type = st.selectbox("Type d'action", ["agent_execution", "workflow_execution", "email_send", "file_operation", "custom_action"])
+            schedule_type = st.selectbox("Type de planification", ["datetime", "recurring", "seasonal", "conditional"])
+            schedule_config = {}
+            if schedule_type == "datetime":
+                c1, c2 = st.columns(2)
+                with c1:
+                    date_val = st.date_input("Date d'exécution")
+                with c2:
+                    time_val = st.time_input("Heure d'exécution")
+                if date_val and time_val:
+                    schedule_config["datetime"] = datetime.combine(date_val, time_val).isoformat()
+            elif schedule_type == "recurring":
+                frequency = st.selectbox("Fréquence", ["daily", "weekly", "monthly", "weekend"])
+                schedule_config["frequency"] = frequency
+                if frequency in ("daily", "weekly", "weekend"):
+                    schedule_config["time"] = st.time_input("Heure").strftime("%H:%M")
+                if frequency == "weekly":
+                    schedule_config["day"] = st.selectbox("Jour", ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"])
+                if frequency == "monthly":
+                    schedule_config["day"] = st.number_input("Jour du mois", min_value=1, max_value=28, value=1)
+                    schedule_config["time"] = st.time_input("Heure").strftime("%H:%M")
+            elif schedule_type == "seasonal":
+                schedule_config["season"] = st.selectbox("Saison", ["spring","summer","autumn","winter"])
+                schedule_config["time"] = st.time_input("Heure").strftime("%H:%M")
+            elif schedule_type == "conditional":
+                cond_type = st.selectbox("Condition", ["email","file","time"]) 
+                condition = {"type": cond_type}
+                if cond_type == "file":
+                    condition["file_path"] = st.text_input("Chemin du fichier à surveiller")
+                elif cond_type == "time":
+                    a, b = st.columns(2)
+                    with a:
+                        after = st.text_input("Après (HH:MM)", placeholder="08:00")
+                    with b:
+                        before = st.text_input("Avant (HH:MM)", placeholder="18:00")
+                    condition["time_condition"] = {"after": after, "before": before}
+                schedule_config["condition"] = condition
+
+            target = {}
+            if task_type == "agent_execution":
+                target["agent_name"] = st.selectbox("Agent à exécuter", [a.get('name') for a in non_system_agents]) if non_system_agents else st.text_input("Nom de l'agent")
+            elif task_type == "workflow_execution":
+                target["workflow_name"] = st.text_input("Nom du workflow à exécuter")
+            elif task_type == "email_send":
+                target["recipients"] = [e.strip() for e in st.text_input("Destinataires (emails)").split(",") if e.strip()]
+                target["subject"] = st.text_input("Sujet")
+            elif task_type == "file_operation":
+                target["operation"] = st.text_input("Opération (copy/move/etc.)")
+                target["file_path"] = st.text_input("Chemin du fichier")
+            elif task_type == "custom_action":
+                target["action"] = st.text_input("Action personnalisée")
+
+            max_exec = st.number_input("Nombre max d'exécutions (-1 illimité)", value=-1)
+            submitted = st.form_submit_button("📅 Planifier")
+            if submitted:
+                payload = {"name": name, "description": description, "type": task_type, "schedule_type": schedule_type, "schedule_config": schedule_config, "target": target, "max_executions": int(max_exec)}
+                res = planner_agent.plan_task(payload)
+                if res.get("success"):
+                    st.success(res.get("message", "Tâche planifiée"))
+                else:
+                    st.error(res.get("error", "Erreur"))
+    # Alerte globale si l'email n'est pas configuré pour l'utilisateur
+    current_username = (st.session_state.current_user.get('username') if st.session_state.get('current_user') else 'local_user') or 'local_user'
+    if not email_agent.get_user_config(str(current_username)):
+        st.warning("📧 Email non configuré. Configurez votre SMTP pour envoyer des résultats.")
+        st.info("Ouvrez la page '📧 Configuration Email' dans la barre latérale")
+        try:
+            if st.button("Ouvrir la page 📧 Configuration Email →"):
+                render_email_configuration_view()
+                return
+        except Exception:
+            pass
+
     # Configuration de la sidebar
     with st.sidebar:
         st.markdown("""
@@ -238,10 +396,19 @@ def show_main_app():
         """, unsafe_allow_html=True)
         
         # Menu de navigation
+        base_options = ["📊 Dashboard", "🤖 Agents", "⚙️ Modèles", "🔄 Workflows", "📈 Statistiques"]
+        base_icons = ["📊", "🤖", "⚙️", "🔄", "📈"]
+        if st.session_state.get('authenticated', False):
+            base_options += ["📧 Configuration Email", "📆 Planification", "👑 Administration"]
+            base_icons += ["📧", "📆", "👑"]
+        else:
+            base_options += ["👑 Administration"]
+            base_icons += ["👑"]
+
         selected = option_menu(
             menu_title=None,
-            options=["📊 Dashboard", "🤖 Agents", "⚙️ Modèles", "🔄 Workflows", "📈 Statistiques", "👑 Administration"],
-            icons=["📊", "🤖", "⚙️", "🔄", "📈", "👑"],
+            options=base_options,
+            icons=base_icons,
             menu_icon="cast",
             default_index=0,
             styles={
@@ -269,6 +436,18 @@ def show_main_app():
                 }
             }
         )
+        
+        # Rien ici: rendu géré plus bas pour conserver un flux clair
+
+        # Raccourcis vers les nouvelles pages
+        st.markdown("---")
+        st.markdown("### Raccourcis")
+        if st.button("📧 Configuration Email"):
+            render_email_configuration_view()
+            return
+        if st.button("📆 Planification des Tâches"):
+            render_planning_view()
+            return
         
         # Vérifier les permissions d'administration
         current_user_role = st.session_state.current_user.get('role', 'user') if st.session_state.current_user else 'user'
@@ -402,6 +581,70 @@ def show_main_app():
                         st.session_state.current_agent = agent
                         st.success("✅ Agent chargé avec succès ! Redirection vers l'exécution...")
                         st.rerun()
+
+        # Actions rapides
+        st.markdown("---")
+        st.markdown("### ⚡ Actions rapides")
+        user_id = (st.session_state.current_user.get('username') if st.session_state.get('current_user') else 'local_user') or 'local_user'
+        user_cfg = email_agent.get_user_config(str(user_id))
+
+        colA, colB = st.columns(2)
+        with colA:
+            if user_cfg:
+                st.success("📧 Email configuré pour cet utilisateur")
+            else:
+                st.warning("📧 Email non configuré. Configurez votre SMTP pour envoyer des résultats.")
+                try:
+                    st.page_link("pages/email_configuration.py", label="Configurer l'Email maintenant →", icon="📧")
+                except Exception:
+                    st.info("Ouvrez la page '📧 Configuration Email' dans la barre latérale")
+
+        with colB:
+            st.markdown("#### 🗓️ Planifier rapidement une exécution d'agent")
+            non_system_agents = [a for a in agents if not a.get('system')]
+            if not non_system_agents:
+                st.info("Aucun agent utilisateur disponible.")
+            else:
+                with st.form("quick_plan_form"):
+                    agent_name = st.selectbox("Agent à exécuter", [a.get('name') for a in non_system_agents])
+                    plan_type = st.selectbox("Type", ["datetime", "weekend"])
+                    if plan_type == "datetime":
+                        date_val = st.date_input("Date")
+                        time_val = st.time_input("Heure")
+                    else:
+                        date_val = None
+                        time_val = st.time_input("Heure", key="weekend_time")
+                    submit_plan = st.form_submit_button("📅 Planifier")
+                    if submit_plan:
+                        if plan_type == "datetime" and (not date_val or not time_val):
+                            st.error("Veuillez sélectionner une date et une heure.")
+                        else:
+                            if plan_type == "datetime":
+                                dt_iso = datetime.combine(date_val, time_val).isoformat()
+                                payload = {
+                                    "name": f"Exécution {agent_name}",
+                                    "description": "Planification rapide depuis Dashboard",
+                                    "type": "agent_execution",
+                                    "schedule_type": "datetime",
+                                    "schedule_config": {"datetime": dt_iso},
+                                    "target": {"agent_name": agent_name},
+                                    "max_executions": 1
+                                }
+                            else:
+                                payload = {
+                                    "name": f"Exécution {agent_name} (week-end)",
+                                    "description": "Planification week-end depuis Dashboard",
+                                    "type": "agent_execution",
+                                    "schedule_type": "recurring",
+                                    "schedule_config": {"frequency": "weekend", "time": time_val.strftime("%H:%M")},
+                                    "target": {"agent_name": agent_name},
+                                    "max_executions": -1
+                                }
+                            res = planner_agent.plan_task(payload)
+                            if res.get("success"):
+                                st.success(res.get("message", "Tâche planifiée"))
+                            else:
+                                st.error(res.get("error", "Erreur lors de la planification"))
     
     # Page Agents
     elif selected == "🤖 Agents":
@@ -490,18 +733,36 @@ def show_main_app():
                         st.rerun()
                 
                 with col2:
-                    if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
-                        st.info(f"Fonctionnalité d'édition à implémenter pour l'agent {agent.get('name', 'N/A')}")
+                    if agent.get('system'):
+                        st.button(f"✏️ Éditer", key=f"edit_{agent['id']}", disabled=True)
+                        st.caption("Agent système non éditable")
+                    else:
+                        if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
+                            st.info(f"Fonctionnalité d'édition à implémenter pour l'agent {agent.get('name', 'N/A')}")
                 
                 with col3:
-                    if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
-                        agents.remove(agent)
-                        save_agents(agents)
-                        st.success(f"✅ Agent '{agent.get('name', 'N/A')}' supprimé avec succès !")
-                        st.rerun()
+                    if agent.get('system'):
+                        st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}", disabled=True)
+                        st.caption("Agent système non supprimable")
+                    else:
+                        if st.button(f"🗑️ Supprimer", key=f"delete_{agent['id']}"):
+                            agents.remove(agent)
+                            save_agents(agents)
+                            st.success(f"✅ Agent '{agent.get('name', 'N/A')}' supprimé avec succès !")
+                            st.rerun()
         else:
             st.info("🤖 Aucun agent créé pour le moment. Commencez par en créer un !")
     
+    # Vue Configuration Email intégrée
+    if selected == "📧 Configuration Email":
+        render_email_configuration_view()
+        return
+
+    # Vue Planification intégrée
+    if selected == "📆 Planification":
+        render_planning_view()
+        return
+
     # Page Modèles
     elif selected == "⚙️ Modèles":
         st.markdown("""

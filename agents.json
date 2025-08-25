@@ -146,5 +146,29 @@
         "user_prompt": ""
       }
     ]
+  },
+  {
+    "id": "planner_agent_system",
+    "name": "Planificateur de Tâches",
+    "domain": "Système",
+    "type": "Outil",
+    "model": "System",
+    "system_prompt": "Agent système de planification (date/heure, week-ends, saisons, conditions).",
+    "status": "active",
+    "created_at": "2025-08-25 13:26:54",
+    "executions": [],
+    "system": true
+  },
+  {
+    "id": "email_agent_system",
+    "name": "Agent d'Envoi d'Emails",
+    "domain": "Système",
+    "type": "Outil",
+    "model": "System",
+    "system_prompt": "Agent système d'envoi par email des résultats d'agents/workflows (config SMTP par utilisateur).",
+    "status": "active",
+    "created_at": "2025-08-25 13:26:54",
+    "executions": [],
+    "system": true
   }
 ]

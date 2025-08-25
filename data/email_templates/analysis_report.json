@@ -1,0 +1,4 @@
+{
+  "subject": "Rapport d'Analyse - {report_title}",
+  "body": "\n                <html>\n                <body>\n                    <h2>Rapport d'Analyse: {report_title}</h2>\n                    <p><strong>Date de génération:</strong> {generation_date}</p>\n                    <p><strong>Type d'analyse:</strong> {analysis_type}</p>\n                    <hr>\n                    <h3>Résumé:</h3>\n                    <div style=\"background-color: #f5f5f5; padding: 15px; border-radius: 5px;\">\n                        {summary}\n                    </div>\n                    <hr>\n                    <p><em>Ce rapport a été généré automatiquement par la Plateforme Agents IA</em></p>\n                </body>\n                </html>\n                "
+}

@@ -235,3 +235,4 @@ Le projet peut être utilisé immédiatement pour :
 *Développée avec créativité exceptionnelle et technologies modernes*
 *Prête pour l'avenir de l'intelligence artificielle* 🚀✨
 
+

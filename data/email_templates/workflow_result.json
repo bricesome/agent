@@ -1,0 +1,4 @@
+{
+  "subject": "Résultat du Workflow {workflow_name}",
+  "body": "\n                <html>\n                <body>\n                    <h2>Résultat du Workflow {workflow_name}</h2>\n                    <p><strong>Date d'exécution:</strong> {execution_date}</p>\n                    <p><strong>Description:</strong> {description}</p>\n                    <p><strong>Agents impliqués:</strong> {agents_involved}</p>\n                    <hr>\n                    <h3>Résultat:</h3>\n                    <div style=\"background-color: #f5f5f5; padding: 15px; border-radius: 5px;\">\n                        {result}\n                    </div>\n                    <hr>\n                    <p><em>Cet email a été généré automatiquement par la Plateforme Agents IA</em></p>\n                </body>\n                </html>\n                "
+}
