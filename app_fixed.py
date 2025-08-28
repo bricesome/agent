@@ -29,7 +29,7 @@ db_manager = DatabaseManager()
 
 # Import du module d'intégration IA
 try:
-    from ai_integration import display_model_status, ai_orchestrator
+    import ai_integration
     GROK_AVAILABLE = True
 except ImportError:
     GROK_AVAILABLE = False
@@ -269,6 +269,8 @@ def show_main_app():
     
     if 'current_workflow' not in st.session_state:
         st.session_state.current_workflow = None
+    if 'selected_model' not in st.session_state:
+        st.session_state.selected_model = "Grok Beta"
     
     # Vues intégrées
     def render_email_configuration_view():
@@ -355,10 +357,15 @@ def show_main_app():
             if task_type == "agent_execution":
                 target["agent_name"] = st.selectbox("Agent à exécuter", [a.get('name') for a in non_system_agents]) if non_system_agents else st.text_input("Nom de l'agent")
             elif task_type == "workflow_execution":
-                target["workflow_name"] = st.text_input("Nom du workflow à exécuter")
+                # Charger les workflows
+                try:
+                    workflows_data = load_workflows()
+                except Exception:
+                    workflows_data = []
+                target["workflow_name"] = st.selectbox("Workflow à exécuter", [w.get('name') for w in workflows_data]) if workflows_data else st.text_input("Nom du workflow")
             elif task_type == "email_send":
-                target["recipients"] = [e.strip() for e in st.text_input("Destinataires (emails)").split(",") if e.strip()]
                 target["subject"] = st.text_input("Sujet")
+                target["recipients"] = [e.strip() for e in st.text_input("Destinataires (emails séparés par des virgules)").split(",") if e.strip()]
             elif task_type == "file_operation":
                 target["operation"] = st.text_input("Opération (copy/move/etc.)")
                 target["file_path"] = st.text_input("Chemin du fichier")
@@ -738,7 +745,8 @@ def show_main_app():
                         st.caption("Agent système non éditable")
                     else:
                         if st.button(f"✏️ Éditer", key=f"edit_{agent['id']}"):
-                            st.info(f"Fonctionnalité d'édition à implémenter pour l'agent {agent.get('name', 'N/A')}")
+                            st.session_state.editing_agent = agent
+                            st.rerun()
                 
                 with col3:
                     if agent.get('system'):
@@ -750,6 +758,62 @@ def show_main_app():
                             save_agents(agents)
                             st.success(f"✅ Agent '{agent.get('name', 'N/A')}' supprimé avec succès !")
                             st.rerun()
+
+                if st.session_state.get('editing_agent') and st.session_state.editing_agent['id'] == agent['id']:
+                    st.markdown("### ✏️ Éditer l'Agent")
+
+                    with st.form(f"edit_agent_{agent['id']}"):
+                        col1, col2 = st.columns(2)
+
+                        with col1:
+                            edit_name = st.text_input("🏷️ Nom", value=agent.get('name', ''),
+                                                      key=f"edit_name_{agent['id']}")
+                            edit_domain = st.text_input("🎯 Domaine", value=agent.get('domain', ''),
+                                                        key=f"edit_domain_{agent['id']}")
+
+                        with col2:
+                            edit_type = st.selectbox(
+                                "🔧 Type",
+                                ["Analyse", "Rapport", "Résumé", "Traduction", "Code", "Autre"],
+                                index=["Analyse", "Rapport", "Résumé", "Traduction", "Code", "Autre"].index(
+                                    agent.get('type', 'Analyse')),
+                                key=f"edit_type_{agent['id']}"
+                            )
+                            edit_status = st.selectbox(
+                                "📊 Statut",
+                                ["active", "inactive"],
+                                index=["active", "inactive"].index(agent.get('status', 'active')),
+                                key=f"edit_status_{agent['id']}"
+                            )
+
+                        edit_prompt = st.text_area(
+                            "💬 Prompt Système",
+                            value=agent.get('system_prompt', ''),
+                            height=150,
+                            key=f"edit_prompt_{agent['id']}"
+                        )
+
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.form_submit_button("💾 Sauvegarder", type="primary"):
+                                agent.update({
+                                    "name": edit_name,
+                                    "domain": edit_domain,
+                                    "type": edit_type,
+                                    "status": edit_status,
+                                    "system_prompt": edit_prompt
+                                })
+                                save_agents(agents)
+                                st.success("Agent mis à jour avec succès !")
+                                st.session_state.editing_agent = None
+                                st.rerun()
+
+                        with col2:
+                            if st.form_submit_button("❌ Annuler"):
+                                st.session_state.editing_agent = None
+                                st.rerun()
+
+                st.markdown("---")
         else:
             st.info("🤖 Aucun agent créé pour le moment. Commencez par en créer un !")
     
@@ -773,26 +837,41 @@ def show_main_app():
         """, unsafe_allow_html=True)
         
         # Configuration des clés API
-        with st.expander("🔑 Configuration des Clés API", expanded=True):
-            with st.form("api_keys_form"):
-                st.markdown("### 🔑 Entrez vos Clés API")
-                
+        with st.expander("➕ Ajouter un Nouveau Modèle"):
+            with st.form("add_model"):
                 col1, col2 = st.columns(2)
+
                 with col1:
-                    openai_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")
-                    anthropic_key = st.text_input("Anthropic API Key", type="password", placeholder="sk-ant-...")
-                
+                    model_name = st.text_input("🏷️ Nom du Modèle", placeholder="Ex: GPT-5")
+                    provider = st.text_input("🏢 Fournisseur", placeholder="Ex: OpenAI")
+
                 with col2:
-                    google_key = st.text_input("Google AI API Key", type="password", placeholder="AIza...")
-                    grok_key = st.text_input("Grok API Key", type="password", placeholder="Votre clé Grok...")
-                
-                if st.form_submit_button("💾 Sauvegarder les Clés API"):
-                    st.success("✅ Clés API sauvegardées !")
+                    api_key = st.text_input("🔑 Clé API", type="password", placeholder="sk-...")
+                    status = st.selectbox("📊 Statut", ["active", "inactive", "testing"])
+
+                description = st.text_area("📝 Description", placeholder="Description du modèle...")
+
+                if st.form_submit_button("✅ Ajouter le Modèle", type="primary"):
+                    if model_name and provider:
+                        new_model = {
+                            "name": model_name,
+                            "provider": provider,
+                            "api_key": api_key,
+                            "status": status,
+                            "description": description,
+                            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        models.append(new_model)
+                        save_models(models)
+                        st.success(f"Modèle '{model_name}' ajouté avec succès !")
+                        st.rerun()
+                    else:
+                        st.error("Veuillez remplir les champs obligatoires.")
         
         # Intégration avec le module AI
         if GROK_AVAILABLE:
             st.markdown("### 🔗 Intégration IA")
-            display_model_status()
+            ai_integration.display_model_status()
         else:
             st.warning("⚠️ Module d'intégration IA non disponible. Installez les dépendances.")
     

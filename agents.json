@@ -1,7 +1,7 @@
 [
   {
     "id": "agent_1_1703123456",
-    "name": "Analyste Financier Pro",
+    "name": "Analyste Financier Pr",
     "domain": "Finance",
     "type": "Analyse",
     "system_prompt": "Vous êtes un analyste financier expert spécialisé dans l'analyse des rapports financiers, des bilans et des états de résultats. Votre rôle est d'identifier les tendances, les risques et les opportunités dans les données financières. Fournissez des analyses détaillées avec des recommandations concrètes.",
@@ -45,50 +45,6 @@
         "agent_id": "agent_1_1703123456",
         "agent_name": "Analyste Financier Pro",
         "timestamp": "2025-08-24 21:03:34",
-        "content_type": "📄 Fichier PDF",
-        "content_length": 43061,
-        "user_prompt": ""
-      }
-    ]
-  },
-  {
-    "id": "agent_3_1703123458",
-    "name": "Traducteur Multilingue",
-    "domain": "Langues",
-    "type": "Traduction",
-    "system_prompt": "Vous êtes un traducteur professionnel maîtrisant plusieurs langues. Traduisez les textes en conservant le style, le ton et le contexte culturel. Fournissez des traductions précises et naturelles.",
-    "status": "active",
-    "created_at": "2024-01-01 12:00:00",
-    "model": "GPT-4",
-    "executions": [
-      {
-        "agent_id": "agent_3_1703123458",
-        "agent_name": "Traducteur Multilingue",
-        "timestamp": "2025-08-24 04:35:44",
-        "content_type": "📝 Texte direct",
-        "content_length": 9,
-        "user_prompt": ""
-      },
-      {
-        "agent_id": "agent_3_1703123458",
-        "agent_name": "Traducteur Multilingue",
-        "timestamp": "2025-08-24 04:36:11",
-        "content_type": "📝 Texte direct",
-        "content_length": 9,
-        "user_prompt": "Traduire en français "
-      },
-      {
-        "agent_id": "agent_3_1703123458",
-        "agent_name": "Traducteur Multilingue",
-        "timestamp": "2025-08-24 21:13:09",
-        "content_type": "📄 Fichier PDF",
-        "content_length": 57183,
-        "user_prompt": ""
-      },
-      {
-        "agent_id": "agent_3_1703123458",
-        "agent_name": "Traducteur Multilingue",
-        "timestamp": "2025-08-24 21:19:48",
         "content_type": "📄 Fichier PDF",
         "content_length": 43061,
         "user_prompt": ""
@@ -170,5 +126,16 @@
     "created_at": "2025-08-25 13:26:54",
     "executions": [],
     "system": true
+  },
+  {
+    "id": "agent_20250828_023111",
+    "name": "SOME",
+    "domain": "Finance",
+    "type": "Analyse",
+    "model": "Groq",
+    "system_prompt": "Tu es un expert un analyse de données",
+    "status": "active",
+    "created_at": "2025-08-28 02:31:11",
+    "executions": []
   }
 ]

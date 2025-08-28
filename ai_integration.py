@@ -25,6 +25,71 @@ class AIProvider:
         """Méthode de base pour traiter une requête"""
         raise NotImplementedError("Cette méthode doit être implémentée par les sous-classes")
 
+
+class GroqProvider(AIProvider):
+    """Intégration avec l'API Groq (Groq Inc.)"""
+
+    def __init__(self, api_key: str, model: str = "llama3-8b-8192"):
+        super().__init__(api_key, model)
+        self.provider_name = "Groq"
+        try:
+            import requests
+            self.session = requests.Session()
+            self.session.headers.update({
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json',
+                'User-Agent': 'Groq-Platform/1.0'
+            })
+        except ImportError:
+            import streamlit as st
+            st.error("❌ Module 'requests' non installé. Installez-le avec: pip install requests")
+            self.session = None
+
+    def process_request(self, system_prompt: str, user_input: str, **kwargs):
+        """Traite une requête avec l’API Groq"""
+        if not self.session:
+            return {"error": "Session Groq non initialisée"}
+
+        try:
+            response = self.session.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_input}
+                    ],
+                    "max_tokens": kwargs.get("max_tokens", 4000),
+                    "temperature": kwargs.get("temperature", 0.7)
+                },
+                timeout=30
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                return {
+                    "success": True,
+                    "provider": self.provider_name,
+                    "model": self.model,
+                    "response": result["choices"][0]["message"]["content"],
+                    "usage": result.get("usage"),
+                    "timestamp": datetime.now().isoformat()
+                }
+            else:
+                return {
+                    "success": False,
+                    "status_code": response.status_code,
+                    "error": response.text,
+                    "provider": self.provider_name
+                }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "provider": self.provider_name,
+                "timestamp": datetime.now().isoformat()
+            }
+
 class GrokProvider(AIProvider):
     """Intégration X (Twitter) Grok - Modèle IA d'Elon Musk"""
     
@@ -288,13 +353,21 @@ class AIOrchestrator:
     def __init__(self):
         self.providers = {}
         self.load_providers()
+        print("touché")
     
     def load_providers(self):
         """Charge tous les fournisseurs IA disponibles"""
+        groq_key = os.getenv('GROQ_API_KEY')
+        if groq_key and groq_key != "votre_cle_groq_ici":
+            self.providers['Groq'] = GroqProvider(groq_key, "llama3-8b-8192")
+            print("Groq cel: ", groq_key)
+            st.success("🚀 Modèle Groq détecté et configuré !")
+
         # 🚀 GROK - Nouveau modèle d'X (Twitter)
         grok_key = os.getenv('GROK_API_KEY')
         if grok_key and grok_key != "votre_cle_grok_ici":
             self.providers['Grok Beta'] = GrokProvider(grok_key, "grok-beta")
+            print("Grok cel: ",grok_key)
             st.success("🚀 Modèle Grok détecté et configuré !")
         
         # OpenAI

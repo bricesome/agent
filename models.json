@@ -1,5 +1,12 @@
 [
   {
+    "name": "Groq",
+    "provider": "groq API",
+    "status": "active",
+    "description": "Groq open source",
+    "created_at": "2024-01-01 00:00:00"
+  },
+  {
     "name": "Grok Beta",
     "provider": "X (Twitter)",
     "status": "active",
@@ -33,5 +40,61 @@
     "status": "active",
     "description": "Modèle Llama 2 de Meta",
     "created_at": "2024-01-01 00:00:00"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "testing",
+    "description": "",
+    "created_at": "2025-08-27 23:40:59"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "testing",
+    "description": "",
+    "created_at": "2025-08-27 23:41:02"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "active",
+    "description": "",
+    "created_at": "2025-08-27 23:41:09"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "active",
+    "description": "",
+    "created_at": "2025-08-27 23:41:10"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "active",
+    "description": "Grok clef",
+    "created_at": "2025-08-27 23:41:25"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "testing",
+    "description": "Grok clef",
+    "created_at": "2025-08-27 23:41:29"
+  },
+  {
+    "name": "Grok",
+    "provider": "X",
+    "api_key": "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",
+    "status": "active",
+    "description": "Grok clef",
+    "created_at": "2025-08-27 23:41:32"
   }
 ]

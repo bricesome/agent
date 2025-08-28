@@ -35,10 +35,10 @@ class AuthManager:
                 # Créer un utilisateur admin par défaut
                 self.users = {
                     "admin": {
-                        "username": "admin",
+                        "username": "Triolo",
                         "password_hash": self._hash_password("admin123"),
                         "email": "admin@example.com",
-                        "role": "admin",
+                        "role": "First2001@",
                         "created_at": datetime.now().isoformat(),
                         "last_login": None
                     }

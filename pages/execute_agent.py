@@ -7,6 +7,9 @@ from docx import Document
 import io
 import base64
 from agents.email_agent import email_agent
+import time
+
+current_agent = st.session_state.current_agent
 
 # Configuration de la page
 st.set_page_config(
@@ -92,6 +95,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 # Fonctions utilitaires
 def load_agents():
     if os.path.exists('agents.json'):
@@ -99,9 +103,11 @@ def load_agents():
             return json.load(f)
     return []
 
+
 def save_agents(agents):
     with open('agents.json', 'w', encoding='utf-8') as f:
         json.dump(agents, f, ensure_ascii=False, indent=2)
+
 
 def extract_text_from_pdf(pdf_file):
     """Extrait le texte d'un fichier PDF"""
@@ -115,6 +121,7 @@ def extract_text_from_pdf(pdf_file):
         st.error(f"Erreur lors de la lecture du PDF: {str(e)}")
         return None
 
+
 def extract_text_from_docx(docx_file):
     """Extrait le texte d'un fichier Word"""
     try:
@@ -127,84 +134,82 @@ def extract_text_from_docx(docx_file):
         st.error(f"Erreur lors de la lecture du fichier Word: {str(e)}")
         return None
 
+
 def simulate_ai_processing(agent, content, user_prompt):
     """Simule le traitement IA (remplacez par votre vraie API)"""
-    import time
-    
+
+
     # Simulation du traitement
     with st.spinner("🤖 L'agent IA traite votre demande..."):
         time.sleep(2)  # Simulation du délai de traitement
-    
+
     # Génération d'une réponse simulée basée sur le type d'agent
     agent_type = agent.get('type', 'Analyse')
-    
+
     if agent_type == "Analyse":
         response = f"""
-## 📊 Analyse Générée par {agent.get('name')}
+        ## 📊 Analyse Générée par {agent.get('name')}
 
-### 🔍 Résumé du Contenu
-{content[:200]}...
+        ### 🔍 Résumé du Contenu
+        {content[:200]}...
 
-### 💡 Points Clés Identifiés
-- Point important 1
-- Point important 2
-- Point important 3
+        ### 💡 Points Clés Identifiés
+        - Point important 1
+        - Point important 2
+        - Point important 3
 
-### 🎯 Recommandations
-- Recommandation 1
-- Recommandation 2
+        ### 📈 Observations
+        L'analyse révèle plusieurs éléments intéressants qui méritent une attention particulière.
+                """
 
-### 📈 Observations
-L'analyse révèle plusieurs éléments intéressants qui méritent une attention particulière.
-        """
-    
     elif agent_type == "Rapport":
         response = f"""
-## 📋 Rapport Généré par {agent.get('name')}
+        ## 📋 Rapport Généré par {agent.get('name')}
+        
+        ### 📊 Données Analysées
+        {content[:200]}...
+        
+        ### 📈 Résultats
+        - Résultat 1: [Description]
+        - Résultat 2: [Description]
+        - Résultat 3: [Description]
 
-### 📊 Données Analysées
-{content[:200]}...
+        ### 📝 Conclusion
+        Ce rapport présente une vue d'ensemble complète des informations analysées.
+                """
 
-### 📈 Résultats
-- Résultat 1: [Description]
-- Résultat 2: [Description]
-- Résultat 3: [Description]
-
-### 📝 Conclusion
-Ce rapport présente une vue d'ensemble complète des informations analysées.
-        """
-    
     elif agent_type == "Résumé":
         response = f"""
-## 📝 Résumé Généré par {agent.get('name')}
+        ## 📝 Résumé Généré par {agent.get('name')}
+        
+        ### 🎯 Contenu Principal
+        {content[:300]}...
+        
+        ### 🔑 Points Essentiels
+        1. **Point clé 1**: [Description]
+        2. **Point clé 2**: [Description]
+        3. **Point clé 3**: [Description]
+        
+        ### 📊 Synthèse
+        Résumé concis des informations principales extraites du document.
+                """
 
-### 🎯 Contenu Principal
-{content[:300]}...
-
-### 🔑 Points Essentiels
-1. **Point clé 1**: [Description]
-2. **Point clé 2**: [Description]
-3. **Point clé 3**: [Description]
-
-### 📊 Synthèse
-Résumé concis des informations principales extraites du document.
-        """
-    
     else:
         response = f"""
-## 🤖 Traitement Effectué par {agent.get('name')}
+        ## 🤖 Traitement Effectué par {agent.get('name')}
+        
+        ### 📄 Contenu Traité
+        {content[:200]}...
+        
+        ### 🎯 Demande Utilisateur
+        {user_prompt}
+        
+        ### ✅ Résultat
+        Traitement terminé avec succès selon les spécifications de l'agent.
+                """
 
-### 📄 Contenu Traité
-{content[:200]}...
+        return response
 
-### 🎯 Demande Utilisateur
-{user_prompt}
-
-### ✅ Résultat
-Traitement terminé avec succès selon les spécifications de l'agent.
-        """
-    
-    return response
 
 # Vérification de l'agent sélectionné
 if 'current_agent' not in st.session_state or not st.session_state.current_agent:
@@ -213,7 +218,7 @@ if 'current_agent' not in st.session_state or not st.session_state.current_agent
         st.rerun()
     st.stop()
 
-current_agent = st.session_state.current_agent
+
 
 # En-tête de la page
 st.markdown(f"""
@@ -260,6 +265,7 @@ if content_type == "📝 Texte direct":
         height=200
     )
     file_uploaded = bool(content.strip())
+    #return content
 
 elif content_type == "📄 Fichier PDF":
     st.markdown("""
@@ -268,13 +274,13 @@ elif content_type == "📄 Fichier PDF":
         <p>Formats acceptés: PDF</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
     uploaded_file = st.file_uploader(
         "Choisir un fichier PDF",
         type=['pdf'],
         key="pdf_uploader"
     )
-    
+
     if uploaded_file is not None:
         file_uploaded = True
         content = extract_text_from_pdf(uploaded_file)
@@ -288,13 +294,13 @@ elif content_type == "📘 Fichier Word":
         <p>Formats acceptés: DOCX</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
     uploaded_file = st.file_uploader(
         "Choisir un fichier Word",
         type=['docx'],
         key="docx_uploader"
     )
-    
+
     if uploaded_file is not None:
         file_uploaded = True
         content = extract_text_from_docx(uploaded_file)
@@ -320,15 +326,15 @@ user_prompt = st.text_area(
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if st.button(
-        "🚀 Exécuter l'Agent IA",
-        type="primary",
-        use_container_width=True,
-        disabled=not file_uploaded
+            "🚀 Exécuter l'Agent IA",
+            type="primary",
+            use_container_width=True,
+            disabled=not file_uploaded
     ):
         if content:
             # Exécution de l'agent
             result = simulate_ai_processing(current_agent, content, user_prompt)
-            
+
             # Affichage du résultat
             st.markdown("### 🎯 Résultat du Traitement")
             st.markdown(f"""
@@ -336,11 +342,11 @@ with col2:
                 {result}
             </div>
             """, unsafe_allow_html=True)
-            
+
             # Options de téléchargement
             st.markdown("### 💾 Télécharger le Résultat")
             col1, col2 = st.columns(2)
-            
+
             with col1:
                 # Téléchargement en format texte
                 st.download_button(
@@ -349,7 +355,7 @@ with col2:
                     file_name=f"resultat_{current_agent.get('name', 'agent')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                     mime="text/plain"
                 )
-            
+
             with col2:
                 # Téléchargement en format Markdown
                 st.download_button(
@@ -381,12 +387,13 @@ with col2:
                         if send_res.get("success"):
                             st.success(send_res.get("message", "Email envoyé."))
                         else:
-                            st.error(send_res.get("error", "Échec d'envoi. Configurez votre email dans la page Modèles/Configuration."))
-            
+                            st.error(send_res.get("error",
+                                                  "Échec d'envoi. Configurez votre email dans la page Modèles/Configuration."))
+
             # Historique des exécutions
             if 'execution_history' not in st.session_state:
                 st.session_state.execution_history = []
-            
+
             execution_record = {
                 "agent_id": current_agent.get('id'),
                 "agent_name": current_agent.get('name'),
@@ -395,9 +402,9 @@ with col2:
                 "content_length": len(content),
                 "user_prompt": user_prompt
             }
-            
+
             st.session_state.execution_history.append(execution_record)
-            
+
             # Sauvegarde dans le fichier des agents
             agents = load_agents()
             for agent in agents:
@@ -406,9 +413,9 @@ with col2:
                         agent['executions'] = []
                     agent['executions'].append(execution_record)
                     break
-            
+
             save_agents(agents)
-            
+
             st.success("✅ Exécution terminée avec succès !")
         else:
             st.error("❌ Veuillez fournir du contenu à traiter.")
@@ -416,7 +423,7 @@ with col2:
 # Affichage de l'historique des exécutions
 if 'execution_history' in st.session_state and st.session_state.execution_history:
     st.markdown("### 📚 Historique des Exécutions")
-    
+
     for record in st.session_state.execution_history[-5:]:  # Afficher les 5 dernières
         with st.expander(f"🕒 {record['timestamp']} - {record['agent_name']}"):
             st.write(f"**Type de contenu:** {record['content_type']}")

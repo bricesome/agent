@@ -23,7 +23,7 @@ class EmailAgent:
     
     def __init__(self):
         self.agent_id = "email_agent_system"
-        self.name = "�� Agent d'Envoi d'Emails"
+        self.name = "Agent d'Envoi d'Emails"
         self.description = "Agent spécialisé dans l'envoi automatique de résultats par email"
         self.version = "1.0.0"
         self.config_file = "data/email_configs.json"

@@ -1,5 +1,6 @@
 import streamlit as st
 from agents.planner_agent import planner_agent
+import json
 from datetime import datetime
 
 st.set_page_config(page_title="📆 Planification des Tâches", page_icon="📆", layout="wide")
@@ -64,12 +65,27 @@ with st.expander("➕ Planifier une nouvelle tâche", expanded=True):
 
         target = {}
         if task_type == "agent_execution":
-            target["agent_name"] = st.text_input("Nom de l'agent à exécuter")
+            try:
+                with open("agents.json", "r", encoding="utf-8") as f:
+                    agents_list = json.load(f)
+            except Exception:
+                agents_list = []
+            non_system = [a for a in agents_list if not a.get("system")]
+            target_agent = st.selectbox("Agent à exécuter", [a.get("name") for a in non_system]) if non_system else st.text_input("Nom de l'agent")
+            target["agent_name"] = target_agent
         elif task_type == "workflow_execution":
-            target["workflow_name"] = st.text_input("Nom du workflow à exécuter")
+            try:
+                with open("workflows.json", "r", encoding="utf-8") as f:
+                    workflows = json.load(f)
+            except Exception:
+                workflows = []
+            workflow_name = st.selectbox("Workflow à exécuter", [w.get("name") for w in workflows]) if workflows else st.text_input("Nom du workflow")
+            target["workflow_name"] = workflow_name
         elif task_type == "email_send":
-            target["recipients"] = [e.strip() for e in st.text_input("Destinataires (emails)").split(",") if e.strip()]
-            target["subject"] = st.text_input("Sujet")
+            subject = st.text_input("Sujet")
+            recipients = st.text_input("Destinataires (emails séparés par des virgules)")
+            target["subject"] = subject
+            target["recipients"] = [e.strip() for e in recipients.split(",") if e.strip()]
         elif task_type == "file_operation":
             target["operation"] = st.text_input("Opération (copy/move/etc.)")
             target["file_path"] = st.text_input("Chemin du fichier")

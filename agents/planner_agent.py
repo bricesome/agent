@@ -19,7 +19,7 @@ class PlannerAgent:
     
     def __init__(self):
         self.agent_id = "planner_agent_system"
-        self.name = "�� Planificateur de Tâches"
+        self.name = "Planificateur de Tâches"
         self.description = "Agent spécialisé dans la planification et l'exécution automatique de tâches"
         self.version = "1.0.0"
         self.tasks_file = "data/planned_tasks.json"
@@ -129,13 +129,28 @@ class PlannerAgent:
         """Planifie une tâche à une date/heure précise"""
         schedule_config = task["schedule_config"]
         target_datetime = datetime.fromisoformat(schedule_config["datetime"])
-        
-        # Planifier la tâche
-        schedule.every().day.at(target_datetime.strftime("%H:%M")).do(
-            self._execute_task, task["id"]
-        ).tag(task["id"])
-        
         task["next_execution"] = target_datetime.isoformat()
+
+        # Exécution unique précise via Timer
+        now = datetime.now()
+        delay_seconds = (target_datetime - now).total_seconds()
+        if delay_seconds < 0:
+            delay_seconds = 0
+
+        def _run_once():
+            try:
+                self._execute_task(task["id"])
+            finally:
+                # Désactiver après exécution unique
+                t = self.get_task(task["id"])
+                if t:
+                    t["enabled"] = False
+                    t["status"] = "completed"
+                    self._save_tasks()
+
+        timer = threading.Timer(delay_seconds, _run_once)
+        timer.daemon = True
+        timer.start()
     
     def _schedule_recurring_task(self, task: Dict[str, Any]):
         """Planifie une tâche récurrente"""
