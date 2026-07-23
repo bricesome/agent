@@ -106,7 +106,7 @@ class GrokProvider(AIProvider):
                 'User-Agent': 'Grok-Platform/1.0'
             })
         except ImportError:
-            st.error("❌ Module 'requests' non installé. Installez-le avec: pip install requests")
+            st.error(" Module 'requests' non installé. Installez-le avec: pip install requests")
             self.session = None
     
     def process_request(self, system_prompt: str, user_input: str, **kwargs):
@@ -173,10 +173,10 @@ class GrokProvider(AIProvider):
         """Génère une réponse stylée comme Grok"""
         # Simulation d'une réponse Grok réaliste
         grok_responses = [
-            "🤖 Grok Beta: Salut ! Je suis Grok, le modèle IA d'Elon Musk via xAI. ",
-            "🚀 Basé sur ma formation, je peux vous aider avec cette question. ",
-            "💡 Voici mon analyse selon les informations disponibles : ",
-            "🎯 En tant que modèle Grok, je considère que... ",
+            " Grok Beta: Salut ! Je suis Grok, le modèle IA d'Elon Musk via xAI. ",
+            " Basé sur ma formation, je peux vous aider avec cette question. ",
+            " Voici mon analyse selon les informations disponibles : ",
+            " En tant que modèle Grok, je considère que... ",
             "⚡ D'après ma compréhension, la réponse est... "
         ]
         
@@ -361,14 +361,14 @@ class AIOrchestrator:
         if groq_key and groq_key != "votre_cle_groq_ici":
             self.providers['Groq'] = GroqProvider(groq_key, "llama3-8b-8192")
             print("Groq cel: ", groq_key)
-            st.success("🚀 Modèle Groq détecté et configuré !")
+            st.success(" Modèle Groq détecté et configuré !")
 
-        # 🚀 GROK - Nouveau modèle d'X (Twitter)
+        #  GROK - Nouveau modèle d'X (Twitter)
         grok_key = os.getenv('GROK_API_KEY')
         if grok_key and grok_key != "votre_cle_grok_ici":
             self.providers['Grok Beta'] = GrokProvider(grok_key, "grok-beta")
             print("Grok cel: ",grok_key)
-            st.success("🚀 Modèle Grok détecté et configuré !")
+            st.success(" Modèle Grok détecté et configuré !")
         
         # OpenAI
         openai_key = os.getenv('OPENAI_API_KEY')
@@ -416,10 +416,10 @@ ai_orchestrator = AIOrchestrator()
 
 def display_model_status():
     """Affiche le statut des modèles IA disponibles"""
-    st.markdown("### 🔍 Statut des Modèles IA")
+    st.markdown("### Statut des Modèles IA")
     
     if not ai_orchestrator.providers:
-        st.warning("⚠️ Aucun modèle IA configuré. Configurez vos clés API dans config.env")
+        st.warning(" Aucun modèle IA configuré. Configurez vos clés API dans config.env")
         return
     
     # Afficher le statut de chaque modèle
@@ -431,9 +431,9 @@ def display_model_status():
         
         with col2:
             if provider.api_key and provider.api_key != "votre_cle_ici":
-                st.success("✅ Configuré")
+                st.success("Configuré")
             else:
-                st.error("❌ Non configuré")
+                st.error(" Non configuré")
         
         with col3:
             if st.button(f"Test {model_name}", key=f"test_{model_name}"):
@@ -445,10 +445,10 @@ def display_model_status():
                 )
                 
                 if result.get("success"):
-                    st.success("✅ Modèle fonctionnel !")
+                    st.success(" Modèle fonctionnel !")
                     st.info(f"Réponse: {result['response'][:100]}...")
                 else:
-                    st.error(f"❌ Erreur: {result.get('error', 'Erreur inconnue')}")
+                    st.error(f" Erreur: {result.get('error', 'Erreur inconnue')}")
         
         st.markdown("---")
     
