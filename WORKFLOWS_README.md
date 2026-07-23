@@ -1,67 +1,67 @@
-# 🔄 Workflows Multi-Agents - Guide Complet
+#  Workflows Multi-Agents - Guide Complet
 
-## 🎯 **Vue d'ensemble**
+##  **Vue d'ensemble**
 
 La fonctionnalité **Workflows Multi-Agents** permet de créer et gérer des processus automatisés impliquant plusieurs agents IA qui travaillent en séquence pour résoudre des problématiques complexes.
 
-## 🚀 **Fonctionnalités Principales**
+##  **Fonctionnalités Principales**
 
-### ✅ **Création de Workflows**
+###  **Création de Workflows**
 - Interface intuitive pour créer des workflows personnalisés
 - Templates prédéfinis (Support Client, Analyse Financière, etc.)
 - Configuration des étapes et agents
 - Gestion des dépendances entre étapes
 
-### ✅ **Types de Workflows Supportés**
+###  **Types de Workflows Supportés**
 1. **Support Client - Résolution de Problème** (4 étapes)
 2. **Analyse Financière** (3 étapes)
 3. **Rédaction de Contenu** (à implémenter)
 4. **Recherche et Analyse** (à implémenter)
 5. **Personnalisé** (workflows sur mesure)
 
-### ✅ **Gestion et Exécution**
+###  **Gestion et Exécution**
 - Pagination des workflows
 - Exécution en temps réel
 - Monitoring des étapes
 - Historique des exécutions
 - Gestion des erreurs
 
-## 🔄 **Exemple : Workflow Support Client**
+##  **Exemple : Workflow Support Client**
 
-### **Étape 1 : Classification** ❓
+### **Étape 1 : Classification** 
 - **Agent** : Agent Classification
 - **Rôle** : Classifier automatiquement le problème client
 - **Sortie** : Type de problème, priorité, catégorie
 
-### **Étape 2 : Diagnostic** 🔍
+### **Étape 2 : Diagnostic** 
 - **Agent** : Agent Diagnostic
 - **Rôle** : Analyser le problème en profondeur
 - **Sortie** : Cause racine, analyse détaillée
 
-### **Étape 3 : Solution** 💡
+### **Étape 3 : Solution** 
 - **Agent** : Agent Solution
 - **Rôle** : Proposer une solution adaptée
 - **Sortie** : Étapes de résolution, procédures
 
-### **Étape 4 : Suivi** 📞
+### **Étape 4 : Suivi** 
 - **Agent** : Agent Suivi
 - **Rôle** : Planifier le suivi et vérifier la résolution
 - **Sortie** : Date de suivi, actions de vérification
 
-## 🛠️ **Utilisation**
+##  **Utilisation**
 
 ### **1. Créer un Workflow**
-1. Aller à la page **"🔄 Workflows"**
-2. Cliquer sur **"➕ Créer un Nouveau Workflow"**
+1. Aller à la page **" Workflows"**
+2. Cliquer sur **" Créer un Nouveau Workflow"**
 3. Remplir les informations (nom, description, type)
 4. Configurer les agents pour chaque étape
 5. Sauvegarder le workflow
 
 ### **2. Exécuter un Workflow**
 1. Sélectionner un workflow dans la liste
-2. Cliquer sur **"▶️ Exécuter"**
+2. Cliquer sur **" Exécuter"**
 3. Voir les détails des étapes
-4. Cliquer sur **"🚀 Lancer l'Exécution du Workflow"**
+4. Cliquer sur **" Lancer l'Exécution du Workflow"**
 5. Suivre l'exécution en temps réel
 
 ### **3. Gérer les Workflows**
@@ -70,7 +70,7 @@ La fonctionnalité **Workflows Multi-Agents** permet de créer et gérer des pro
 - **Cloner** : Copier un workflow existant
 - **Partager** : Partager avec d'autres utilisateurs
 
-## 📊 **Architecture Technique**
+##  **Architecture Technique**
 
 ### **Structure des Données**
 ```json
@@ -121,7 +121,7 @@ Pour utiliser les workflows, vous devez avoir créé des agents avec les noms su
 - Configurer des workflows conditionnels
 - Ajouter des boucles et conditions
 
-## 📈 **Statistiques et Monitoring**
+##  **Statistiques et Monitoring**
 
 ### **Métriques Disponibles**
 - Nombre total de workflows
@@ -136,7 +136,7 @@ Pour utiliser les workflows, vous devez avoir créé des agents avec les noms su
 - Gestion des erreurs
 - Logs d'exécution
 
-## 🚀 **Futures Améliorations**
+##  **Futures Améliorations**
 
 ### **Fonctionnalités Prévues**
 - Workflows conditionnels avec if/else
@@ -152,7 +152,7 @@ Pour utiliser les workflows, vous devez avoir créé des agents avec les noms su
 - **RH** : Recrutement et onboarding
 - **Logistique** : Gestion de la chaîne d'approvisionnement
 
-## 💡 **Conseils d'Utilisation**
+##  **Conseils d'Utilisation**
 
 ### **Bonnes Pratiques**
 1. **Nommer clairement** vos workflows et étapes
@@ -169,9 +169,6 @@ Pour utiliser les workflows, vous devez avoir créé des agents avec les noms su
 
 ---
 
-## 🎉 **Conclusion**
-
-Les **Workflows Multi-Agents** transforment votre plateforme en un véritable orchestrateur d'intelligence artificielle, capable de gérer des processus complexes de manière automatisée et intelligente.
 
 **Commencez par créer votre premier workflow et découvrez la puissance de l'automatisation multi-agents !** 🚀
 

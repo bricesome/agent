@@ -1,33 +1,33 @@
-# 🚀 Guide Complet des Nouvelles Fonctionnalités - Plateforme Agents IA
+# Guide Complet des Nouvelles Fonctionnalités - Plateforme Agents IA
 
-## 📋 **Table des Matières**
+## **Table des Matières**
 
-1. [🔐 Système d'Authentification](#-système-dauthentification)
-2. [🗄️ Base de Données Professionnelle](#️-base-de-données-professionnelle)
-3. [🌐 API REST](#-api-rest)
-4. [📦 Structure du Projet](#-structure-du-projet)
-5. [�� Installation et Démarrage](#-installation-et-démarrage)
-6. [💡 Exemples d'Utilisation](#-exemples-dutilisation)
-7. [🔧 Configuration Avancée](#-configuration-avancée)
-8. [📚 Documentation API](#-documentation-api)
+1. [ Système d'Authentification](#-système-dauthentification)
+2. [ Base de Données Professionnelle](#️-base-de-données-professionnelle)
+3. [ API REST](#-api-rest)
+4. [ Structure du Projet](#-structure-du-projet)
+5. [ Installation et Démarrage](#-installation-et-démarrage)
+6. [ Exemples d'Utilisation](#-exemples-dutilisation)
+7. [ Configuration Avancée](#-configuration-avancée)
+8. [ Documentation API](#-documentation-api)
 
 ---
 
-## 🔐 **Système d'Authentification**
+##  **Système d'Authentification**
 
 ### **Description**
 Système d'authentification professionnel et sécurisé utilisant bcrypt pour le hachage des mots de passe et la gestion des sessions utilisateur.
 
 ### **Fonctionnalités**
-- ✅ **Inscription utilisateur** avec validation des données
-- ✅ **Connexion sécurisée** avec hachage bcrypt
-- ✅ **Gestion des sessions** avec expiration automatique
-- ✅ **Rôles utilisateur** (admin, user)
-- ✅ **Déconnexion** et invalidation des sessions
+-  **Inscription utilisateur** avec validation des données
+-  **Connexion sécurisée** avec hachage bcrypt
+-  **Gestion des sessions** avec expiration automatique
+-  **Rôles utilisateur** (admin, user)
+-  **Déconnexion** et invalidation des sessions
 
 ### **Utilisation**
 
-#### **1. Inscription d'un nouvel utilisateur**
+#### **1. Inscription d'un nouvel utilisateur avec un script**
 ```python
 from auth.auth_manager import AuthManager
 
@@ -42,43 +42,19 @@ success = auth_manager.register_user(
 )
 
 if success:
-    print("✅ Utilisateur créé avec succès")
+    print("Utilisateur créé avec succès")
 else:
-    print("❌ Erreur lors de la création")
-```
-
-#### **2. Authentification utilisateur**
-```python
-# Authentifier un utilisateur
-user = auth_manager.authenticate_user("john_doe", "motdepasse123")
-
-if user:
-    print(f"✅ Connexion réussie pour {user['username']}")
-    print(f"🔑 Session ID: {user['session_id']}")
-    print(f"👤 Rôle: {user['role']}")
-else:
-    print("❌ Identifiants incorrects")
-```
-
-#### **3. Validation de session**
-```python
-# Valider une session
-session = auth_manager.validate_session(user['session_id'])
-
-if session:
-    print("✅ Session valide")
-else:
-    print("❌ Session expirée ou invalide")
+    print("Erreur lors de la création")
 ```
 
 ---
 
-## ��️ **Base de Données Professionnelle**
+##  **Base de Données Professionnelle**
 
 ### **Description**
 Gestionnaire de base de données SQLite évolutif avec architecture modulaire, prêt pour la migration vers PostgreSQL/MySQL en production.
 
-### **Tables Créées**
+### **Tables **
 - **`users`** - Gestion des utilisateurs
 - **`agents`** - Stockage des agents IA
 - **`workflows`** - Gestion des workflows
@@ -91,16 +67,16 @@ Gestionnaire de base de données SQLite évolutif avec architecture modulaire, p
 ```python
 from database.db_manager import DatabaseManager
 
-# Créer une instance du gestionnaire
+# Création une instance du gestionnaire
 db_manager = DatabaseManager("data/ai_platform.db")
 
-# La base de données est automatiquement initialisée
+# La base de données automatiquement initialisée
 # avec toutes les tables nécessaires
 ```
 
 #### **2. Gestion des utilisateurs**
 ```python
-# Insérer un utilisateur
+# Insertion d'un utilisateur
 user_id = db_manager.insert_user(
     username="admin",
     email="admin@example.com",
@@ -155,26 +131,26 @@ history = db_manager.get_execution_history(user_id, limit=10)
 
 ---
 
-## 🌐 **API REST**
+## **API REST**
 
 ### **Description**
 API REST professionnelle construite avec FastAPI, offrant une interface moderne et documentée automatiquement pour toutes les opérations de la plateforme.
 
 ### **Endpoints Disponibles**
 
-#### **🔐 Authentification**
+#### ** Authentification**
 - `POST /auth/register` - Inscription utilisateur
 - `POST /auth/login` - Connexion utilisateur
 - `POST /auth/logout` - Déconnexion utilisateur
 
-#### **🤖 Agents**
+#### ** Agents**
 - `GET /agents` - Liste des agents
 - `POST /agents` - Création d'agent
 
-#### **🚀 Exécution**
+#### ** Exécution**
 - `POST /execute` - Exécution d'agent
 
-#### **💚 Santé**
+#### ** Santé**
 - `GET /health` - Vérification de la santé de l'API
 
 ### **Utilisation**
@@ -227,7 +203,7 @@ curl -X POST "http://localhost:8000/agents" \
 
 ---
 
-## �� **Structure du Projet**
+##  **Structure du Projet**
 ```
 ai-agents-platform/
 ├── 📁 auth/                    # Module d'authentification
@@ -244,17 +220,17 @@ ai-agents-platform/
 │   ├── sessions.json         # Sessions
 │   └── ai_platform.db        # Base SQLite
 ├── 📁 pages/                  # Pages Streamlit existantes
-├── 🔧 app_fixed.py           # Application principale
-├── 🔧 ai_integration.py      # Intégration IA
-├── 📋 requirements.txt        # Dépendances de base
-├── 🚀 requirements-prod.txt   # Dépendances production
-├── 🚀 start_api.py           # Script de démarrage API
-└── 📚 README.md              # Documentation
+├──  app_fixed.py           # Application principale
+├──  ai_integration.py      # Intégration IA
+├──  requirements.txt        # Dépendances de base
+├──  requirements-prod.txt   # Dépendances production
+├──  start_api.py           # Script de démarrage API
+└──  README.md              # Documentation
 ```
 
 ---
 
-## 🚀 **Installation et Démarrage**
+##  **Installation et Démarrage**
 
 ### **1. Installation des Dépendances**
 ```bash
@@ -281,14 +257,14 @@ streamlit run app_fixed.py
 ```
 
 ### **4. Accès aux Services**
-- 🌐 **Application Streamlit**: http://localhost:8501
+-  **Application Streamlit**: http://localhost:8501
 -  **API REST**: http://localhost:8000
-- 📚 **Documentation API**: http://localhost:8000/docs
-- 🔍 **Documentation Alternative**: http://localhost:8000/redoc
+-  **Documentation API**: http://localhost:8000/docs
+-  **Documentation Alternative**: http://localhost:8000/redoc
 
 ---
 
-## 💡 **Exemples d'Utilisation**
+##  **Exemples d'Utilisation**
 
 ### **Exemple 1: Création d'un Utilisateur et Agent**
 ```python
@@ -314,7 +290,7 @@ agent_id = db_manager.insert_agent(
     created_by=user_id
 )
 
-print(f"✅ Agent créé avec l'ID: {agent_id}")
+print(f" Agent créé avec l'ID: {agent_id}")
 ```
 
 ### **Exemple 2: Utilisation de l'API REST**
@@ -403,7 +379,7 @@ async def custom_middleware(request, call_next):
 
 ---
 
-## 📚 **Documentation API**
+##  **Documentation API**
 
 ### **Accès à la Documentation**
 Une fois l'API démarrée, accédez à :
@@ -412,10 +388,10 @@ Une fois l'API démarrée, accédez à :
 
 ### **Tests Interactifs**
 La documentation Swagger permet de :
-- ✅ Voir tous les endpoints disponibles
-- ✅ Tester les API directement depuis le navigateur
-- ✅ Voir les modèles de données (Pydantic)
-- ✅ Exécuter des requêtes avec des exemples
+-  Voir tous les endpoints disponibles
+-  Tester les API directement depuis le navigateur
+-  Voir les modèles de données (Pydantic)
+-  Exécuter des requêtes avec des exemples
 
 ### **Exemple de Documentation d'Endpoint**
 ```python
@@ -441,23 +417,6 @@ async def create_agent(
     """
     # ... implémentation
 ```
-
----
-
-## 🎯 **Prochaines Étapes**
-
-### **Fonctionnalités à Implémenter**
-1. **Interface d'authentification** dans Streamlit
-2. **Intégration base de données** avec l'UI existante
-3. **Gestion des permissions** par rôle
-4. **Logs et monitoring** avancés
-5. **Tests automatisés** complets
-
-### **Migration Production**
-1. **Base de données**: SQLite → PostgreSQL/MySQL
-2. **Authentification**: JWT tokens
-3. **Sécurité**: HTTPS, CORS restreint
-4. **Déploiement**: Docker, Kubernetes
 
 ---
 
@@ -496,7 +455,7 @@ curl http://localhost:8000/health
 
 ---
 
-## 📞 **Support**
+##  **Support**
 
 Pour toute question ou problème :
 1. **Vérifier les logs** de l'API et de l'application
@@ -506,7 +465,9 @@ Pour toute question ou problème :
 
 ---
 
-*🎉 Félicitations ! Vous avez maintenant une plateforme d'agents IA professionnelle avec authentification, base de données et API REST ! 🚀*
-```
-
-Ce guide complet explique toutes les fonctionnalités implémentées et fournit des exemples concrets d'utilisation. Il couvre l'installation, la configuration, l'utilisation et le dépannage de votre nouvelle plateforme ! 🎯
+##  **Auteur**
+- SOME NIBENAON
+- Linlkedin : www.linkedin.com/in/nibènaon-some-296175274 
+- website : https://lped.info/Influences/?SomeNibenaon/ 
+- Email : nibenaons@gmail.com
+- TEL : +22661275837

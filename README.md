@@ -1,8 +1,8 @@
-# 🤖 Plateforme de Gestion des Agents IA
+# Plateforme de Gestion des Agents IA
 
 Une plateforme moderne et intuitive développée avec Streamlit pour créer, gérer et exécuter des agents d'intelligence artificielle.
 
-## 🚀 Démarrage Rapide
+## Démarrage Rapide
 
 ### 1. Installation des dépendances
 ```bash
@@ -19,10 +19,10 @@ python init_demo.py
 streamlit run app.py
 ```
 
-## 🌐 Accès
+## Accès
 Ouvrez votre navigateur et allez sur : **http://localhost:8501**
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - **Dashboard interactif** avec métriques et graphiques
 - **Gestion des agents IA** : création, édition, suppression
@@ -30,7 +30,7 @@ Ouvrez votre navigateur et allez sur : **http://localhost:8501**
 - **Modèles IA** : GPT-4, Claude-3, Gemini Pro, Llama 2
 - **Interface moderne** avec design attrayant
 
-## 📁 Structure
+##  Structure
 
 ```
 ai-agents-platform/
@@ -42,14 +42,14 @@ ai-agents-platform/
 └── run.bat               # Lancement Windows
 ```
 
-## 🎯 Utilisation
+##  Utilisation
 
 1. **Créer un agent** : Nom, domaine, type, prompt système
 2. **Sélectionner un modèle** : Choisir le modèle IA à utiliser
 3. **Exécuter l'agent** : Traiter du contenu (texte, PDF, Word)
 4. **Analyser les résultats** : Visualiser et télécharger les résultats
 
-## 🔧 Support
+##  Support
 
 - **Windows** : Double-cliquez sur `run.bat`
 - **Tests** : `python test_app.py`
@@ -57,4 +57,12 @@ ai-agents-platform/
 
 ---
 
-**Développé avec ❤️ et Streamlit**
+**Développé avec et Streamlit**
+
+
+## **Auteur**
+- SOME NIBENAON
+- Linlkedin : www.linkedin.com/in/nibènaon-some-296175274 
+- website : https://lped.info/Influences/?SomeNibenaon/ 
+- Email : nibenaons@gmail.com
+- TEL : +22661275837
